@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class UserController {
+public class AuthController {
 
     UserService userService;
 
-    public UserController(UserService userService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 
@@ -36,10 +36,10 @@ public class UserController {
     // user submit registration form
     @PostMapping("/register/save")
     public String userPostRegister(@Valid @ModelAttribute("user") UserDto user, BindingResult result, Model model) {
-        if (userService.existsByEmail(user.getEmail())) {
+        if (userService.existsByEmail(user.getEmail())) { // check if user already exists
             result.rejectValue("email", null, "There is already a user with this email");
         }
-        if (result.hasErrors()) {
+        if (result.hasErrors()) { // check if form has errors
             model.addAttribute("user",user);
             return "register";
         }

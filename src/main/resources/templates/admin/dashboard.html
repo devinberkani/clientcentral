@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<div th:replace="~{header :: header}"></div>
+
+<body>
+
+<!--<div th:replace="~{admin/header :: navbar}"></div>-->
+
+<div class="container">
+    <div class="row">
+        <h1>Clients</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <form class="form-inline" th:action="@{/admin/dashboard/search}">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="q" th:value="${query}"/>
+                        <!-- binds the input to the query -->
+                        <input type="hidden" name="p" value="1"/>
+                        <input type="hidden" name="s" th:value="${sortField}"/>
+                        <input type="hidden" name="d" th:value="${sortDir}"/>
+                        <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                        <a th:if="${query != null && query != ''}" th:href="@{/admin/dashboard}" class="btn btn-secondary" type="button">Clear</a>
+                      </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <h4 th:if="${query != null && query != ''}">
+        <span th:text="${totalItems}"></span>
+        <span th:text="${totalItems == 1 ? 'result' : 'results'}"></span> for
+        "<strong th:text="${query}"/>"
+    </h4>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-dark">
+            <th style="width:20%">
+                <a th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${currentPage} + '&s=firstName&d=' + ${reverseSortDir}}">First
+                    Name</a>
+            </th>
+            <th style="width:20%">
+                <a th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${currentPage} + '&s=lastName&d=' + ${reverseSortDir}}">Last
+                    Name</a>
+            </th>
+            <th style="width:20%">Phone Number</th>
+            <th style="width:20%">Email</th>
+            <th style="width:20%">Actions</th>
+            </thead>
+            <tbody>
+            <tr th:each="client : ${clients}">
+                <td th:text="${client.firstName}">First Name</td>
+                <td th:text="${client.lastName}">Last Name</td>
+                <!-- #temporals is used to format dates and times -->
+                <td th:text="${client.phoneNumber}">555-555-5555</td>
+                <td th:text="${client.email}">user@gmail.com</td>
+                <td>
+                    <a th:href="@{/admin/{postId}/edit(postId=${''})}" class="btn btn-primary my-1 my-xl-0">Edit</a>
+                    <a th:href="@{/admin/{postId}/delete(postId=${''})}" class="btn btn-danger my-1 my-xl-0">Delete</a>
+                    <a th:href="@{/admin/{postUrl}/view(postUrl=${''})}" class="btn btn-info my-1 my-xl-0">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- pagination -->
+
+    <div th:if="${totalPages > 1}">
+        <div>
+        <span>
+            <strong style="margin-right: 15px;">Total Clients: [[${totalItems}]]</strong>
+
+        <span style="margin-right: 15px">
+            <a th:if="${currentPage > 1}"
+               th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${currentPage - 1} + '&s=' + ${sortField} + '&d=' + ${sortDir}}">Prev</a>
+            <span th:unless="${currentPage > 1}">Prev</span>
+        </span>
+
+        <span style="margin-right: 15px;">
+            <span style="margin-right: 5px" th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a th:if="${currentPage != i}"
+                   th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${i} + '&s=' + ${sortField} + '&d=' + ${sortDir}}">[[${i}]]</a>
+                <span th:unless="${currentPage != i}">[[${i}]]</span>
+            </span>
+        </span>
+
+        <span style="margin-right: 5px">
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${currentPage + 1} + '&s=' + ${sortField} + '&d=' + ${sortDir}}">Next</a>
+            <span th:unless="${currentPage < totalPages}">Next</span>
+        </span>
+
+        <span>
+            <a th:if="${currentPage < totalPages}"
+               th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${totalPages} + '&s=' + ${sortField} + '&d=' + ${sortDir}}">Last</a>
+            <span th:unless="${currentPage < totalPages}">Last</span>
+        </span>
+
+        </span>
+        </div>
+    </div>
+
+</div>
+
+<!--<div th:replace="~{admin/footer :: footer}"></div>-->
+
+</body>
+</html>

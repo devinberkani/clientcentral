@@ -1,0 +1,7 @@
+th a {
+    color: white;
+}
+
+th a:hover {
+    color: #D3D3D3;
+}
