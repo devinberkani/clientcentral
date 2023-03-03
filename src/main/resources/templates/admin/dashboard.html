@@ -3,11 +3,11 @@
       xmlns:th="http://www.thymeleaf.org"
 >
 
-<div th:replace="~{header :: header}"></div>
+<div th:replace="~{admin/fragments :: header}"></div>
 
 <body>
 
-<!--<div th:replace="~{admin/header :: navbar}"></div>-->
+<div th:replace="~{admin/fragments :: navbar}"></div>
 
 <div class="container">
     <div class="row">
@@ -109,7 +109,7 @@
 
 </div>
 
-<!--<div th:replace="~{admin/footer :: footer}"></div>-->
+<div th:replace="~{admin/fragments :: footer}"></div>
 
 </body>
 </html>
