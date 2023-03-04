@@ -30,13 +30,9 @@ public class Client {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
     private String phoneNumber;
-    @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
     private LocalDate birthday;
 
     /* many clients belong to one user

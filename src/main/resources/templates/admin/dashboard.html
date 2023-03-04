@@ -19,7 +19,6 @@
                 <form class="form-inline" th:action="@{/admin/dashboard/search}">
                     <div class="input-group">
                         <input type="text" class="form-control" name="q" th:value="${query}"/>
-                        <!-- binds the input to the query -->
                         <input type="hidden" name="p" value="1"/>
                         <input type="hidden" name="s" th:value="${sortField}"/>
                         <input type="hidden" name="d" th:value="${sortDir}"/>

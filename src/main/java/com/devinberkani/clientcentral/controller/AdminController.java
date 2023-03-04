@@ -2,14 +2,15 @@ package com.devinberkani.clientcentral.controller;
 
 import com.devinberkani.clientcentral.dto.ClientDto;
 import com.devinberkani.clientcentral.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -29,8 +30,34 @@ public class AdminController {
         return getPage(page, "", 1, "firstName", "asc", model);
     }
 
+    // handle view create new client page
+    @GetMapping("/create")
+    public String viewCreateClient(Model model) {
+        ClientDto client = new ClientDto();
+        // for birthday datepicker
+        LocalDate currentYear = LocalDate.now();
+        LocalDate nextYear = LocalDate.now().plusYears(1).minusDays(1);
+        model.addAttribute("client", client);
+        model.addAttribute("currentYear", currentYear);
+        model.addAttribute("nextYear", nextYear);
+        return "admin/create_client";
+    }
+
+    // handle submit create new client page
+    @PostMapping("/dashboard")
+    public String submitCreateClient(@Valid @ModelAttribute("client") ClientDto client,
+                                     BindingResult result,
+                                     Model model) {
+        if (result.hasErrors()) { // check if form has errors
+            model.addAttribute("client", client);
+            return "admin/create_client";
+        }
+        clientService.saveNewClient(client);
+        return "redirect:/admin/dashboard";
+    }
+
     @GetMapping("/dashboard/search")
-    public String searchDashboard(@RequestParam("q") String query,
+    public String searchClients(@RequestParam("q") String query,
                                   @RequestParam("p") int pageNo,
                                   @RequestParam("s") String sortField,
                                   @RequestParam("d") String sortDir,

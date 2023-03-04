@@ -43,7 +43,7 @@ public class AuthController {
             model.addAttribute("user",user);
             return "register";
         }
-        userService.saveUser(user);
+        userService.saveNewUser(user);
         return "redirect:/register?success"; // pass success parameter
     }
 

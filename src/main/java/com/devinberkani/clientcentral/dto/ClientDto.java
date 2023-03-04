@@ -2,11 +2,9 @@ package com.devinberkani.clientcentral.dto;
 
 import com.devinberkani.clientcentral.entity.Note;
 import com.devinberkani.clientcentral.entity.User;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,9 +25,11 @@ public class ClientDto {
     @NotEmpty(message = "Last name should not be empty")
     private String lastName;
     private String address;
+
+    // phone number either needs to be empty or match the specified pattern 555-555-5555
+    @Pattern(regexp = "^$|\\d{3}-\\d{3}-\\d{4}", message = "Invalid format. Phone number must be empty or in the format 555-555-5555.")
     private String phoneNumber;
     private String email;
-    @NotEmpty(message = "Birthday should not be empty")
     private LocalDate birthday;
     private User user;
     private List<Note> notes = new ArrayList<>();

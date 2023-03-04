@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface ClientService {
     Page<ClientDto> getClients(String query, int pageNo, String sortField, String sortDir);
+    void saveNewClient(ClientDto client);
 }
