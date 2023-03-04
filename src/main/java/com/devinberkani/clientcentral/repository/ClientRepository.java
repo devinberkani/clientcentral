@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    @Query("SELECT c FROM Client c WHERE c.user.id = :userId AND (LOWER(c.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(c.lastName) LIKE LOWER(CONCAT('%', :query, '%')))")
+    @Query("SELECT c FROM Client c WHERE c.user.id = :userId AND (CONCAT(LOWER(c.firstName),' ',LOWER(c.lastName)) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Client> findMatchingClients(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
     Client findClientById(Long id);
 }
