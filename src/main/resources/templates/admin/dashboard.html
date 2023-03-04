@@ -14,7 +14,8 @@
         <h1>Clients</h1>
     </div>
     <div class="row">
-        <!-- success param alerts -->
+
+        <!-- client success param alerts -->
         <div th:if="${param.create}">
             <div class="alert alert-info">
                 Client successfully created
@@ -30,6 +31,14 @@
                 Client successfully deleted
             </div>
         </div>
+
+        <!-- csv success param alerts -->
+        <div th:if="${param.uploadSuccess}">
+            <div class="alert alert-info">
+                All clients successfully added
+            </div>
+        </div>
+
         <div class="col-md-4">
             <div class="form-group">
                 <form class="form-inline" th:action="@{/admin/dashboard/search}">

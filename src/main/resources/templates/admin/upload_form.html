@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="~{admin/fragments :: header}"></div>
+<body>
+<div th:replace="~{admin/fragments :: navbar}"></div>
+<div class="container">
+    <div class="row col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Bulk Upload Clients</h2>
+            </div>
+            <div class="card-body">
+                <form action="/admin/upload" method="post" enctype="multipart/form-data">
+                    <!-- client error param alerts -->
+                    <div th:if="${param.formatError}">
+                        <div class="alert alert-danger">
+                            Format Error: Please upload a CSV file
+                        </div>
+                    </div>
+                    <div th:if="${param.uploadError}">
+                        <div class="alert alert-danger">
+                            Upload Error: Please make sure clients are formatted correctly
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input class="form-control" id="file" type="file" name="file">
+                        <input class="btn btn-primary" type="submit" value="Upload">
+                    </div>
+                    <label for="file" class="form-label">*Must be a properly formatted CSV file. <a th:href="@{/admin/upload/download/ClientCentralCSVTemplate.csv}">Download Template</a></label>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{admin/fragments :: footer}"></div>
+</body>
+</html>
