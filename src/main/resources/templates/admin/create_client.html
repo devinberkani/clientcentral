@@ -12,7 +12,7 @@
                 <h2 class="text-center">Create New Client</h2>
             </div>
             <div class="card-body">
-                <form role="form" method="post" th:action="@{/admin/dashboard}" th:object="${client}">
+                <form role="form" method="post" th:action="@{/admin/client/create}" th:object="${client}">
                     <div class="mb-3">
 
 
@@ -61,7 +61,7 @@
                     <div class="mb-3">
                         <label class="form-label">Phone Number (555-555-5555)</label>
                         <input
-                                type="text"
+                                type="tel"
                                 class="form-control"
                                 id="phoneNumber"
                                 placeholder="Enter client's phone number"

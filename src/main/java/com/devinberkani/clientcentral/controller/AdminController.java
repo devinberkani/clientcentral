@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
@@ -25,47 +24,23 @@ public class AdminController {
 
     // handle view dashboard landing page
     @GetMapping("/dashboard")
-    public String viewDashboard(Model model) {
-        Page<ClientDto> page = clientService.getClients("", 1, "firstName", "asc"); // page number should always be one for landing page
+    public String getDashboard(Model model) {
+        Page<ClientDto> page = clientService.findMatchingClients("", 1, "firstName", "asc"); // page number should always be one for landing page
         return getPage(page, "", 1, "firstName", "asc", model);
     }
 
-    // handle view create new client page
-    @GetMapping("/create")
-    public String viewCreateClient(Model model) {
-        ClientDto client = new ClientDto();
-        // for birthday datepicker
-        LocalDate currentYear = LocalDate.now();
-        LocalDate nextYear = LocalDate.now().plusYears(1).minusDays(1);
-        model.addAttribute("client", client);
-        model.addAttribute("currentYear", currentYear);
-        model.addAttribute("nextYear", nextYear);
-        return "admin/create_client";
-    }
-
-    // handle submit create new client page
-    @PostMapping("/dashboard")
-    public String submitCreateClient(@Valid @ModelAttribute("client") ClientDto client,
-                                     BindingResult result,
-                                     Model model) {
-        if (result.hasErrors()) { // check if form has errors
-            model.addAttribute("client", client);
-            return "admin/create_client";
-        }
-        clientService.saveNewClient(client);
-        return "redirect:/admin/dashboard";
-    }
-
+    // handle search dashboard
     @GetMapping("/dashboard/search")
-    public String searchClients(@RequestParam("q") String query,
-                                  @RequestParam("p") int pageNo,
-                                  @RequestParam("s") String sortField,
-                                  @RequestParam("d") String sortDir,
-                                  Model model) {
-        Page<ClientDto> page = clientService.getClients(query, pageNo, sortField, sortDir); // page number should always be one for landing page
+    public String getSearchDashboard(@RequestParam("q") String query,
+                                   @RequestParam("p") int pageNo,
+                                   @RequestParam("s") String sortField,
+                                   @RequestParam("d") String sortDir,
+                                   Model model) {
+        Page<ClientDto> page = clientService.findMatchingClients(query, pageNo, sortField, sortDir); // page number should always be one for landing page
         return getPage(page, query, pageNo, sortField, sortDir, model);
     }
 
+    // getPage methods to reduce repetitive code and return dashboard
     private String getPage(Page<ClientDto> page,
                            String query,
                            int pageNo,

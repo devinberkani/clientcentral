@@ -60,9 +60,9 @@
                 <td th:text="${client.phoneNumber}">555-555-5555</td>
                 <td th:text="${client.email}">user@gmail.com</td>
                 <td>
-                    <a th:href="@{/admin/{postId}/edit(postId=${''})}" class="btn btn-primary my-1 my-xl-0">Edit</a>
-                    <a th:href="@{/admin/{postId}/delete(postId=${''})}" class="btn btn-danger my-1 my-xl-0">Delete</a>
-                    <a th:href="@{/admin/{postUrl}/view(postUrl=${''})}" class="btn btn-info my-1 my-xl-0">View</a>
+                    <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}" class="btn btn-primary my-1 my-xl-0">Edit</a>
+                    <a th:href="@{/admin/client/delete/{clientId}(clientId=${client.id})}" class="btn btn-danger my-1 my-xl-0">Delete</a>
+                    <a th:href="@{/admin/client/view/{clientId}(clientId=${client.id})}" class="btn btn-info my-1 my-xl-0">View</a>
                 </td>
             </tr>
             </tbody>

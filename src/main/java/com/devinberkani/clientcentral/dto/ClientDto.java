@@ -5,6 +5,7 @@ import com.devinberkani.clientcentral.entity.User;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class ClientDto {
     @Pattern(regexp = "^$|\\d{3}-\\d{3}-\\d{4}", message = "Invalid format. Phone number must be empty or in the format 555-555-5555.")
     private String phoneNumber;
     private String email;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     private User user;
     private List<Note> notes = new ArrayList<>();

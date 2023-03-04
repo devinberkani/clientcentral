@@ -24,16 +24,16 @@ public class ClientServiceImpl implements ClientService {
         this.userRepository = userRepository;
     }
 
-    // handle get all clients for user dashboard
+    // handle find all matching clients (based query parameters) for user dashboard
     @Override
-    public Page<ClientDto> getClients(String query, int pageNo, String sortField, String sortDir) {
+    public Page<ClientDto> findMatchingClients(String query, int pageNo, String sortField, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo - 1, 10, sort);
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to find list of clients for dashboard - should get current logged in user
-        return clientRepository.getClients((long)1, query, pageable).map(ClientMapper::mapToClientDto);
+        return clientRepository.findMatchingClients((long)1, query, pageable).map(ClientMapper::mapToClientDto);
     }
 
-    // handle save new client
+    // handle create new client
     @Override
     public void saveNewClient(ClientDto client) {
         Client newClient = ClientMapper.mapToClient(client);
@@ -41,5 +41,23 @@ public class ClientServiceImpl implements ClientService {
         User user = userRepository.findUserById((long)1);
         newClient.setUser(user);
         clientRepository.save(newClient);
+    }
+
+    // handle update client
+    @Override
+    public void updateClient(ClientDto client, Long clientId) {
+        Client updatedClient = ClientMapper.mapToClient(client);
+        updatedClient.setId(clientId);
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
+        User user = userRepository.findUserById((long)1);
+        updatedClient.setUser(user);
+        clientRepository.save(updatedClient);
+    }
+
+    // handle find specific client by id
+    @Override
+    public ClientDto findClientById(Long id) {
+        Client client = clientRepository.findClientById(id);
+        return ClientMapper.mapToClientDto(client);
     }
 }

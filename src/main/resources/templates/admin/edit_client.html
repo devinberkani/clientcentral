@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="~{admin/fragments :: header}"></div>
+<body>
+<div th:replace="~{admin/fragments :: navbar}"></div>
+<div class="container">
+  <div class="row col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="text-center">Edit Client</h2>
+      </div>
+      <div class="card-body">
+        <form role="form" method="post" th:action="@{/admin/client/edit/{clientId}(clientId=${clientId})}" th:object="${client}">
+          <div class="mb-3">
+
+
+            <!-- First Name -->
+            <label class="form-label">First Name*</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    placeholder="Enter client's first name"
+                    name="firstName"
+                    th:field="*{firstName}"
+            />
+            <p th:if="${#fields.hasErrors('firstName')}" class="text-danger" th:errors="*{firstName}"></p>
+          </div>
+
+          <!-- Last Name -->
+          <div class="mb-3">
+            <label class="form-label">Last Name*</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="lastName"
+                    placeholder="Enter client's last name"
+                    name="lastName"
+                    th:field="*{lastName}"
+            />
+            <p th:if="${#fields.hasErrors('lastName')}" class="text-danger" th:errors="*{lastName}"></p>
+          </div>
+
+          <!-- Address -->
+          <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    placeholder="Enter client's full address"
+                    name="address"
+                    th:field="*{address}"
+            />
+            <p th:if="${#fields.hasErrors('address')}" class="text-danger" th:errors="*{address}"></p>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mb-3">
+            <label class="form-label">Phone Number (555-555-5555)</label>
+            <input
+                    type="tel"
+                    class="form-control"
+                    id="phoneNumber"
+                    placeholder="Enter client's phone number"
+                    name="phoneNumber"
+                    th:field="*{phoneNumber}"
+            />
+            <p th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger"
+               th:errors="*{phoneNumber}"></p>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="Enter client's email"
+                    name="email"
+                    th:field="*{email}"
+            />
+            <p th:if="${#fields.hasErrors('email')}" class="text-danger" th:errors="*{email}"></p>
+          </div>
+
+          <!-- Birthday -->
+          <div class="mb-3">
+            <label class="form-label">Birthday</label>
+            <input
+                    type="date"
+                    class="form-control"
+                    id="birthday"
+                    placeholder="Enter client's birthday"
+                    th:min="${currentYear}"
+                    th:max="${nextYear}"
+                    th:field="*{birthday}"
+            />
+            <p th:if="${#fields.hasErrors('birthday')}" class="text-danger" th:errors="*{birthday}"></p>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{admin/fragments :: footer}"></div>
+</body>
+</html>
