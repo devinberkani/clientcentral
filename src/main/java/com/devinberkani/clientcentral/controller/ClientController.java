@@ -42,7 +42,7 @@ public class ClientController {
             return "admin/create_client";
         }
         clientService.saveNewClient(client);
-        return "redirect:/admin/dashboard";
+        return "redirect:/admin/dashboard?create";
     }
 
     // handle view edit client page
@@ -70,6 +70,13 @@ public class ClientController {
             return "admin/edit_client";
         }
         clientService.updateClient(client, clientId);
-        return "redirect:/admin/dashboard";
+        return "redirect:/admin/dashboard?update";
+    }
+
+    // handle delete client
+    @GetMapping("/delete/{clientId}")
+    public String getDeleteClient(@PathVariable("clientId") Long clientId) {
+        clientService.deleteClientById(clientId);
+        return "redirect:/admin/dashboard?delete";
     }
 }

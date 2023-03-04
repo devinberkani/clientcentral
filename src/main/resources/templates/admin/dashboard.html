@@ -14,6 +14,22 @@
         <h1>Clients</h1>
     </div>
     <div class="row">
+        <!-- success param alerts -->
+        <div th:if="${param.create}">
+            <div class="alert alert-info">
+                Client successfully created
+            </div>
+        </div>
+        <div th:if="${param.update}">
+            <div class="alert alert-info">
+                Client successfully updated
+            </div>
+        </div>
+        <div th:if="${param.delete}">
+            <div class="alert alert-info">
+                Client successfully deleted
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="form-group">
                 <form class="form-inline" th:action="@{/admin/dashboard/search}">
@@ -75,6 +91,12 @@
         <div>
         <span>
             <strong style="margin-right: 15px;">Total Clients: [[${totalItems}]]</strong>
+
+        <span style="margin-right: 5px">
+            <a th:if="${currentPage > 1}"
+               th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${1} + '&s=' + ${sortField} + '&d=' + ${sortDir}}">First</a>
+            <span th:unless="${currentPage > 1}">First</span>
+        </span>
 
         <span style="margin-right: 15px">
             <a th:if="${currentPage > 1}"
