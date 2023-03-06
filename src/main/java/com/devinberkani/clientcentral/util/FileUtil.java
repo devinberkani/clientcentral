@@ -1,6 +1,7 @@
 package com.devinberkani.clientcentral.util;
 
 import com.devinberkani.clientcentral.dto.ClientDto;
+import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -9,16 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class FileUtil {
 
-    public static String TYPE = "text/csv";
-    static String[] HEADERS = { "First Name", "Last Name", "Address", "Phone Number", "Email", "Birthday" };
+    private final static String TYPE = "text/csv";
+    private final static String[] HEADERS = { "First Name", "Last Name", "Address", "Phone Number", "Email", "Birthday" };
 
-    public static boolean hasCSVFormat(MultipartFile file) {
+    // check if file is a csv
+    public static boolean hasCSVFormat(MultipartFile file) throws DateTimeParseException {
         return TYPE.equals(file.getContentType())
                 || Objects.equals(file.getContentType(), "application/vnd.ms-excel");
     }
@@ -44,7 +47,10 @@ public class FileUtil {
             }
             return clientDtoList;
         } catch (IOException e) {
-            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        } catch (DateTimeParseException dateTimeParseException) {
+            // exception thrown if birthday date is formatted incorrectly in CSV
+            throw new DateTimeParseException("Birthday must be in format \"YYYY-MM-DD\": " + dateTimeParseException.getMessage(), dateTimeParseException.getParsedString(), dateTimeParseException.getErrorIndex());
         }
     }
 

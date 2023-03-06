@@ -6,8 +6,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.FileNotFoundException;
 
@@ -21,23 +23,30 @@ public class FileController {
         this.fileService = fileService;
     }
 
+
+    // handle view bulk upload csv form
     @GetMapping
     public String getUploadCsv() {
         return "admin/upload_form";
     }
 
+    // handle submit bulk upload csv form
     @PostMapping
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    public String uploadFile(@RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) {
         if (FileUtil.hasCSVFormat(file)) {
             try {
                 fileService.save(file);
                 return "redirect:/admin/dashboard?uploadSuccess";
-            } catch (Exception e) {
-                System.out.println("hi");
+            } catch (RuntimeException e) {
+                // if the file was a csv and there was an error, have user check their csv formatting based on instructions and try again
+                System.out.println(e.getMessage());
+                String errorMessage = e.getMessage();
+                redirectAttributes.addAttribute("errorMessage", errorMessage);
                 return "redirect:/admin/upload?uploadError";
             }
         }
-        System.out.println("hi");
+        // if the file isn't a csv, show format error message
         return "redirect:/admin/upload?formatError";
     }
 

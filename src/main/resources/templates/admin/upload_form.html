@@ -21,7 +21,7 @@
                     </div>
                     <div th:if="${param.uploadError}">
                         <div class="alert alert-danger">
-                            Upload Error: Please make sure clients are formatted correctly
+                            Upload Error: <span th:text="'[' + ${param.errorMessage} + ']'"></span> Please check CSV formatting and try again
                         </div>
                     </div>
                     <div class="input-group">

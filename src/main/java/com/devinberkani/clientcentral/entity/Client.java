@@ -1,6 +1,8 @@
 package com.devinberkani.clientcentral.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,11 +29,14 @@ public class Client {
     private LocalDateTime createdOn;
     @UpdateTimestamp // automatically populates value of field with updated timestamp
     private LocalDateTime updatedOn;
+    @NotEmpty(message = "First name should not be empty.")
     @Column(nullable = false)
     private String firstName;
+    @NotEmpty(message = "Last name should not be empty.")
     @Column(nullable = false)
     private String lastName;
     private String address;
+    @Pattern(regexp = "^$|\\d{3}-\\d{3}-\\d{4}", message = "Phone number must be empty or in the format 555-555-5555.")
     private String phoneNumber;
     private String email;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

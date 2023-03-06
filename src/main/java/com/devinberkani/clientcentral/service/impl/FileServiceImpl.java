@@ -8,20 +8,21 @@ import com.devinberkani.clientcentral.repository.ClientRepository;
 import com.devinberkani.clientcentral.repository.UserRepository;
 import com.devinberkani.clientcentral.service.FileService;
 import com.devinberkani.clientcentral.util.FileUtil;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -34,6 +35,7 @@ public class FileServiceImpl implements FileService {
         this.userRepository = userRepository;
     }
 
+    // handle converting ClientDto list from FileUtil class to Client list and saving new list of Client to database
     @Override
     public void save(MultipartFile file) {
         try {
@@ -44,10 +46,23 @@ public class FileServiceImpl implements FileService {
             newClients.forEach(clientDto -> clientDto.setUser(user));
             clientRepository.saveAll(newClients);
         } catch (IOException e) {
-            throw new RuntimeException("fail to store csv data: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        } catch (ConstraintViolationException constraintViolationException) {
+            StringBuilder message = new StringBuilder(); // message stringbuilder
+            Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations(); // violation set
+            List<String> messages = new ArrayList<>();
+            violations.forEach(constraintViolation -> messages.add(constraintViolation.getMessage())); // all custom messages
+            // append to message stringbuilder
+            for (int i = 0; i < messages.size(); i++) {
+                message.append(messages.get(i));
+                if (i < messages.size() - 1) message.append(" ");
+            }
+            // exception thrown if phone number is in wrong format when converting from ClientDto to Client
+            throw new ConstraintViolationException(message.toString(), constraintViolationException.getConstraintViolations());
         }
     }
 
+    // handle load CSV template file from absolute file path
     @Override
     public Resource loadFileAsResource(String fileName) throws FileNotFoundException {
         try {
