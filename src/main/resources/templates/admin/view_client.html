@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="~{admin/fragments :: header}"></div>
+<body>
+<div th:replace="~{admin/fragments :: navbar}"></div>
+<div class="container">
+  <div class="row col-md-8 offset-md-2">
+    <div class="card">
+      <!-- Card Header -->
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="col text-center">
+          <h2 th:text="${client.firstName} + ' ' + ${client.lastName}"></h2>
+        </div>
+        <div class="col-auto text-end">
+          <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}" class="btn btn-primary my-1 my-xl-0">Edit</a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div th:object="${client}">
+          <div class="mb-3">
+
+
+            <!-- First Name -->
+            <label class="form-label client-view-label">First Name</label>
+            <p th:text="*{firstName}"></p>
+          </div>
+
+          <!-- Last Name -->
+          <div class="mb-3">
+            <label class="form-label client-view-label">Last Name</label>
+            <p th:text="*{lastName}"></p>
+          </div>
+
+          <!-- Address -->
+          <div class="mb-3">
+            <label class="form-label client-view-label">Address</label>
+            <p th:text="*{address}"></p>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mb-3">
+            <label class="form-label client-view-label">Phone Number</label>
+            <p th:text="*{phoneNumber}"></p>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label client-view-label">Email</label>
+            <p th:text="*{email}"></p>
+          </div>
+
+          <!-- Birthday -->
+          <div class="mb-3">
+            <label class="form-label client-view-label">Birthday</label>
+            <p th:text="${#temporals.format(client.birthday, 'MMMM d')}"></p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:replace="~{admin/fragments :: footer}"></div>
+</body>
+</html>

@@ -8,8 +8,14 @@
 <div class="container">
   <div class="row col-md-8 offset-md-2">
     <div class="card">
-      <div class="card-header">
-        <h2 class="text-center">Edit Client</h2>
+      <!-- Card Header -->
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="col text-center">
+          <h2 th:text="Edit + ' ' + ${client.firstName} + ' ' + ${client.lastName}"></h2>
+        </div>
+        <div class="col-auto text-end">
+          <a th:href="@{/admin/client/view/{clientId}(clientId=${client.id})}" class="btn btn-info my-1 my-xl-0">View</a>
+        </div>
       </div>
       <div class="card-body">
         <form role="form" method="post" th:action="@{/admin/client/edit/{clientId}(clientId=${clientId})}" th:object="${client}">

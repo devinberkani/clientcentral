@@ -79,4 +79,15 @@ public class ClientController {
         clientService.deleteClientById(clientId);
         return "redirect:/admin/dashboard?delete";
     }
+
+    // handle view client
+    @GetMapping("/view/{clientId}")
+    public String getViewClient(@PathVariable("clientId") Long clientId,
+                                Model model) {
+        ClientDto client = clientService.findClientById(clientId);
+        System.out.println(client.getBirthday().getClass().getName());
+        model.addAttribute("client", client);
+        return "admin/view_client";
+    }
+
 }
