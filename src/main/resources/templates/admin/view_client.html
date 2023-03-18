@@ -64,41 +64,55 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover table-bordered">
-                    <thead class="table-dark">
-                    <th style="width:10%">
-                        Date
-                    </th>
-                    <th style="width:40%">
-                        Content
-                    </th>
-                    <th style="width:25%">
-                        Attachments
-                    </th>
-                    <th style="width:25%">Actions</th>
-                    </thead>
-                    <tbody>
-                    <tr th:each="note : ${client.notes}">
-                        <td th:text="${#temporals.format(note.createdOn, 'MM/dd/yy')}">Date Created</td>
-                        <td th:text="${note.content}">Content</td>
-                        <td>
-                            <ul>
-                                <li th:each="file : ${note.files}">
-                                    <!--                                    <a th:href="@{/admin/attachment/view/{attachmentId}(attachmentId=${attachment.id})}"-->
-                                    <!--                                       th:text="${attachment.name}"></a>-->
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}"
-                               class="btn btn-primary my-1 my-xl-0">Edit</a>
-                            <a th:href="@{/admin/client/delete/{clientId}(clientId=${client.id})}"
-                               class="btn btn-danger my-1 my-xl-0">Delete</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="card">
+                <!-- Card Header -->
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="col text-center">
+                        <h2>Client Notes</h2>
+                    </div>
+                    <div class="col-auto text-end">
+                        <a th:href="@{/admin/notes/client/{clientId}/create(clientId=${client.id})}"
+                           class="btn btn-info my-1 my-xl-0">New <i class="bi bi-pencil-square"></i></a>
+                    </div>
+                </div>
+                <div class="card-body px-0 py-0">
+                    <div class="table-responsive py-0">
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead class="table-dark">
+                            <th style="width:10%">
+                                Date
+                            </th>
+                            <th style="width:40%">
+                                Content
+                            </th>
+                            <th style="width:25%">
+                                Attachments
+                            </th>
+                            <th style="width:25%">Actions</th>
+                            </thead>
+                            <tbody>
+                            <tr th:each="note : ${client.notes}">
+                                <td th:text="${#temporals.format(note.createdOn, 'MM/dd/yy')}">Date Created</td>
+                                <td th:text="${note.content}">Content</td>
+                                <td>
+                                    <ul>
+                                        <li th:each="file : ${note.files}">
+                                            <!--                                    <a th:href="@{/admin/attachment/view/{attachmentId}(attachmentId=${attachment.id})}"-->
+                                            <!--                                       th:text="${attachment.name}"></a>-->
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}"
+                                       class="btn btn-primary my-1 my-xl-0">Edit</a>
+                                    <a th:href="@{/admin/client/delete/{clientId}(clientId=${client.id})}"
+                                       class="btn btn-danger my-1 my-xl-0">Delete</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

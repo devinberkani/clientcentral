@@ -81,7 +81,7 @@ public class ClientController {
     }
 
     // handle view client
-    @GetMapping("/view/{clientId}")
+    @GetMapping("/{clientId}")
     public String getViewClient(@PathVariable("clientId") Long clientId,
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
