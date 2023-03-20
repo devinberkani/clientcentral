@@ -17,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +40,7 @@ public class FileServiceImpl implements FileService {
 
     // handle converting ClientDto list from FileUtil class to Client list and saving new list of Client to database
     @Override
-    public void save(MultipartFile file) {
+    public void saveCsv(MultipartFile file) {
         try {
             List<ClientDto> clientDtoList = FileUtil.csvToClientDto(file.getInputStream());
             List<Client> newClients = clientDtoList.stream().map(ClientMapper::mapToClient).toList();
@@ -59,6 +62,22 @@ public class FileServiceImpl implements FileService {
             }
             // exception thrown if phone number is in wrong format when converting from ClientDto to Client
             throw new ConstraintViolationException(message.toString(), constraintViolationException.getConstraintViolations());
+        }
+    }
+
+    @Override
+    public void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
+        Path uploadPath = Paths.get(uploadDir);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            throw new IOException("Could not save file: " + fileName, ioe);
         }
     }
 

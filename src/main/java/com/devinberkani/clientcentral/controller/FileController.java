@@ -6,7 +6,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,7 +35,7 @@ public class FileController {
                              RedirectAttributes redirectAttributes) {
         if (FileUtil.hasCSVFormat(file)) {
             try {
-                fileService.save(file);
+                fileService.saveCsv(file);
                 return "redirect:/admin/dashboard?uploadSuccess";
             } catch (RuntimeException e) {
                 // if the file was a csv and there was an error, have user check their csv formatting based on instructions and try again

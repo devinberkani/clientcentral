@@ -5,10 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 public interface FileService {
-    void save(MultipartFile file);
+    void saveCsv(MultipartFile file);
+    void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException;
     Resource loadFileAsResource(String fileName) throws FileNotFoundException;
 }
