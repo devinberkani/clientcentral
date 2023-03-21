@@ -2,9 +2,12 @@ package com.devinberkani.clientcentral.service.impl;
 
 import com.devinberkani.clientcentral.dto.ClientDto;
 import com.devinberkani.clientcentral.entity.Client;
+import com.devinberkani.clientcentral.entity.FileAttachment;
 import com.devinberkani.clientcentral.entity.User;
 import com.devinberkani.clientcentral.mapper.ClientMapper;
 import com.devinberkani.clientcentral.repository.ClientRepository;
+import com.devinberkani.clientcentral.repository.FileAttachmentRepository;
+import com.devinberkani.clientcentral.repository.NoteRepository;
 import com.devinberkani.clientcentral.repository.UserRepository;
 import com.devinberkani.clientcentral.service.FileService;
 import com.devinberkani.clientcentral.util.FileUtil;
@@ -13,6 +16,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
@@ -30,12 +34,16 @@ import java.util.Set;
 @Service
 public class FileServiceImpl implements FileService {
 
-    ClientRepository clientRepository;
     UserRepository userRepository;
+    ClientRepository clientRepository;
+    NoteRepository noteRepository;
+    FileAttachmentRepository fileAttachmentRepository;
 
-    public FileServiceImpl(ClientRepository clientRepository, UserRepository userRepository) {
-        this.clientRepository = clientRepository;
+    public FileServiceImpl(UserRepository userRepository, ClientRepository clientRepository, NoteRepository noteRepository, FileAttachmentRepository fileAttachmentRepository) {
         this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
+        this.noteRepository = noteRepository;
+        this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
     // handle converting ClientDto list from FileUtil class to Client list and saving new list of Client to database
@@ -66,8 +74,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
+    public void saveNewFile(MultipartFile multipartFile, Long userId, Long clientId, Long noteId) throws IOException {
+        Path uploadPath = Paths.get("src/main/resources/static/file-attachments/user-" + userId + "/client-" + clientId + "/note-" + noteId);
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -76,6 +85,10 @@ public class FileServiceImpl implements FileService {
         try (InputStream inputStream = multipartFile.getInputStream()) {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            FileAttachment fileAttachment = new FileAttachment();
+            fileAttachment.setFileReference(fileName);
+            fileAttachment.setNote(noteRepository.findNoteById(noteId));
+            fileAttachmentRepository.save(fileAttachment);
         } catch (IOException ioe) {
             throw new IOException("Could not save file: " + fileName, ioe);
         }

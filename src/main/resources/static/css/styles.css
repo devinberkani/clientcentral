@@ -11,6 +11,27 @@ th a:hover {
     color: #D3D3D3;
 }
 
+/* make header and table heading sticky when scrolling through notes */
+
+.notes-header {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa !important;
+    z-index: 1;
+}
+
+.table-responsive{
+    max-height: 500px;
+    overflow:scroll;
+}
+
+thead th {
+    position: sticky;
+    top: -1px;
+    z-index: 1;
+    border: 1px #f8f9fa;
+}
+
 .client-view-label {
     font-weight: bold;
 }

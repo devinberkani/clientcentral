@@ -33,4 +33,5 @@ build/
 .vscode/
 
 ### Sensitive Data ###
+/src/main/resources/static/file-attachments
 /src/main/resources/application.properties

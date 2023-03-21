@@ -8,6 +8,6 @@ import java.io.IOException;
 
 public interface FileService {
     void saveCsv(MultipartFile file);
-    void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException;
+    void saveNewFile(MultipartFile multipartFile, Long userId, Long clientId, Long noteId) throws IOException;
     Resource loadFileAsResource(String fileName) throws FileNotFoundException;
 }

@@ -12,7 +12,7 @@
                 <h2 class="text-center">Create New Note</h2>
             </div>
             <div class="card-body">
-                <form role="form" method="post" th:action="@{/admin/notes/client/{clientId}/create(clientId=${clientId})}" th:object="${note}">
+                <form role="form" method="post" th:action="@{/admin/notes/client/{clientId}/create(clientId=${clientId})}" th:object="${note}" enctype="multipart/form-data">
                     <div class="mb-3">
 
                         <!-- Content -->
@@ -34,7 +34,7 @@
                                 type="file"
                                 class="form-control"
                                 id="files"
-                                name="files"
+                                name="multipartFiles"
                                 multiple
                         />
                     </div>

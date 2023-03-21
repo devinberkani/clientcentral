@@ -5,5 +5,5 @@ import com.devinberkani.clientcentral.dto.NoteDto;
 
 public interface NoteService {
 
-    void saveNewNote(NoteDto note, ClientDto client);
+    Long saveNewNote(NoteDto note, Long clientId);
 }
