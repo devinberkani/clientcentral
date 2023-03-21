@@ -86,7 +86,7 @@ public class ClientController {
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
         model.addAttribute("client", client);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to use in filepath when retrieving file attachments - should get current logged in user
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to use in filepath when retrieving file attachments - should get current logged-in user
         model.addAttribute("userId", 1);
         return "admin/view_client";
     }

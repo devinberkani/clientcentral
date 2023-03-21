@@ -20,8 +20,12 @@ th a:hover {
     z-index: 1;
 }
 
-.table-responsive{
-    max-height: 500px;
+.client-info {
+    height: 539px;
+}
+
+.table-responsive {
+    max-height: 475px;
     overflow:scroll;
 }
 
