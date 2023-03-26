@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +92,46 @@ public class FileServiceImpl implements FileService {
             fileAttachmentRepository.save(fileAttachment);
         } catch (IOException ioe) {
             throw new IOException("Could not save file: " + fileName, ioe);
+        }
+    }
+
+    @Override
+    public void deleteFile(Long fileId, Long noteId, Long clientId, String fileReference) {
+
+        // handle deleting file from the filesystem from edit note view
+
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
+        Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId + "/" + fileReference);
+        if (Files.exists(filePath)) {
+            try {
+
+                // delete the file
+                Files.delete(filePath);
+
+                // check if the specific note directory is empty, if it is, delete it from the filesystem
+                // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
+                File noteDirectory = new File("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId);
+                deleteDirectoryIfEmpty(noteDirectory);
+
+                // check if the specific client directory is empty, if it is, delete it from the filesystem
+                // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
+                File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId);
+                deleteDirectoryIfEmpty(clientDirectory);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        fileAttachmentRepository.deleteById(fileId);
+    }
+
+    @Override
+    public void deleteDirectoryIfEmpty(File directory) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            if (files.length == 0) {
+                directory.delete();
+            }
         }
     }
 

@@ -3,6 +3,19 @@
     margin-bottom: 100px;
 }
 
+/* ALERT STYLING */
+
+.alert {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-btn {
+    float: right;
+}
+
 /* TABLE STYLING */
 
 /* link styling for table */
@@ -33,11 +46,11 @@ th a:hover {
     overflow:scroll;
 }
 
-thead th {
+thead {
     position: sticky;
     top: -1px;
-    z-index: 1;
-    /*border: 1px #f8f9fa;*/
+    z-index: 50;
+    border: 1px #D3D3D3 !important;
 }
 
 /* INDIVIDUAL CLIENT VIEW STYLING */
@@ -53,6 +66,7 @@ thead th {
     justify-content: space-between;
 }
 
-.list-group-item button {
+.list-group-item .file-delete {
     float: right;
 }
+

@@ -41,8 +41,9 @@ public class ClientController {
             model.addAttribute("client", client);
             return "admin/create_client";
         }
-        clientService.saveNewClient(client);
-        return "redirect:/admin/dashboard?create";
+        // return client id to append to create param for client view link
+        Long clientId = clientService.saveNewClient(client);
+        return "redirect:/admin/dashboard?create=" + clientId;
     }
 
     // handle view edit client page
@@ -70,7 +71,7 @@ public class ClientController {
             return "admin/edit_client";
         }
         clientService.updateClient(client, clientId);
-        return "redirect:/admin/dashboard?update";
+        return "redirect:/admin/dashboard?update=" + clientId;
     }
 
     // handle delete client

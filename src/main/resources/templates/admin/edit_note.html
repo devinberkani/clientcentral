@@ -12,6 +12,11 @@
                 <h2 class="text-center">Edit Note</h2>
             </div>
             <div class="card-body">
+                <div th:if="${param.delete}">
+                    <div class="alert alert-success">
+                        File successfully deleted
+                    </div>
+                </div>
                 <form role="form" method="post"
                       th:action="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${clientId}, noteId=${noteId})}"
                       th:object="${note}" enctype="multipart/form-data">
@@ -50,9 +55,10 @@
                             <li class="list-group-item" th:each="file : ${note.files}">
                                 <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"
                                    th:text="${file.fileReference}"></a>
-                                <button type="button" class="btn btn-danger float-right"><i class="bi bi-trash"></i>
+                                <a class="btn btn-danger file-delete" th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}/delete/file/{fileId}/{fileReference}(clientId=${clientId}, noteId=${noteId}, fileId=${file.id},fileReference=${file.fileReference})}">
+                                    <i class="bi bi-trash"></i>
                                     Delete
-                                </button>
+                                </a>
                             </li>
                         </ul>
                     </div>

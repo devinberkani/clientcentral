@@ -41,12 +41,13 @@ public class ClientServiceImpl implements ClientService {
 
     // handle create new client
     @Override
-    public void saveNewClient(ClientDto client) {
+    public Long saveNewClient(ClientDto client) {
         Client newClient = ClientMapper.mapToClient(client);
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
         User user = userRepository.findUserById((long)1);
         newClient.setUser(user);
         clientRepository.save(newClient);
+        return newClient.getId();
     }
 
     // handle update client

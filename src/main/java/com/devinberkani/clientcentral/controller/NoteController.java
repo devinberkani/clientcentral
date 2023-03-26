@@ -107,4 +107,14 @@ public class NoteController {
         return "redirect:/admin/client/{clientId}?delete";
     }
 
+    // handle delete file from edit note view
+    @GetMapping("/edit/client/{clientId}/note/{noteId}/delete/file/{fileId}/{fileReference}")
+    public String getDeleteFile(@PathVariable("clientId") Long clientId,
+                                @PathVariable("noteId") Long noteId,
+                                @PathVariable("fileId") Long fileId,
+                                @PathVariable("fileReference") String fileReference) {
+        fileService.deleteFile(fileId, noteId, clientId, fileReference);
+        return "redirect:/admin/notes/edit/client/{clientId}/note/{noteId}?delete";
+    }
+
 }
