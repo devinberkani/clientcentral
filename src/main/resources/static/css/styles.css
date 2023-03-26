@@ -3,6 +3,10 @@
     margin-bottom: 100px;
 }
 
+/* TABLE STYLING */
+
+/* link styling for table */
+
 th a {
     color: white;
 }
@@ -36,6 +40,19 @@ thead th {
     /*border: 1px #f8f9fa;*/
 }
 
+/* INDIVIDUAL CLIENT VIEW STYLING */
+
 .client-view-label {
     font-weight: bold;
+}
+
+/* EDIT NOTE VIEW STYLING */
+
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list-group-item button {
+    float: right;
 }

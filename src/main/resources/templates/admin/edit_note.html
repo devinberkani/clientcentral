@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<div th:replace="~{admin/fragments :: header}"></div>
+<body>
+<div th:replace="~{admin/fragments :: navbar}"></div>
+<div class="container">
+    <div class="row col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Edit Note</h2>
+            </div>
+            <div class="card-body">
+                <form role="form" method="post"
+                      th:action="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${clientId}, noteId=${noteId})}"
+                      th:object="${note}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="hidden" th:field="*{createdOn}">
+
+                        <!-- Content -->
+                        <label class="form-label">Content*</label>
+                        <textarea
+                                class="form-control"
+                                id="content"
+                                placeholder="Enter content"
+                                rows="3"
+                                name="content"
+                                th:field="*{content}">
+                        </textarea>
+                        <p th:if="${#fields.hasErrors('content')}" class="text-danger" th:errors="*{content}"></p>
+                    </div>
+
+                    <!-- Files -->
+                    <div class="mb-3">
+                        <label class="form-label">Add File Attachments</label>
+                        <input
+                                type="file"
+                                class="form-control"
+                                id="files"
+                                name="multipartFiles"
+                                multiple
+                        />
+                    </div>
+
+                    <!-- Existing Files -->
+                    <div class="mb-3">
+                        <label class="form-label">Existing File Attachments</label>
+                        <ul class="list-group">
+                            <li class="list-group-item" th:each="file : ${note.files}">
+                                <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"
+                                   th:text="${file.fileReference}"></a>
+                                <button type="button" class="btn btn-danger float-right"><i class="bi bi-trash"></i>
+                                    Delete
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{admin/fragments :: footer}"></div>
+</body>
+</html>

@@ -52,4 +52,18 @@ public class NoteServiceImpl implements NoteService {
         }
         noteRepository.deleteById(noteId);
     }
+
+    @Override
+    public NoteDto findNoteById(Long noteId) {
+        Note note = noteRepository.findNoteById(noteId);
+        return NoteMapper.mapToNoteDto(note);
+    }
+
+    @Override
+    public void updateNote(NoteDto note, Long noteId, Long clientId) {
+        note.setId(noteId);
+        Note updatedNote = NoteMapper.mapToNote(note);
+        updatedNote.setClient(clientRepository.findClientById(clientId));
+        noteRepository.save(updatedNote);
+    }
 }

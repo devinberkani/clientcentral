@@ -21,8 +21,8 @@
             <div class="card-body">
                 <form role="form" method="post" th:action="@{/admin/client/edit/{clientId}(clientId=${clientId})}"
                       th:object="${client}">
+                    <input type="hidden" th:field="*{createdOn}">
                     <div class="mb-3">
-
 
                         <!-- First Name -->
                         <label class="form-label">First Name*</label>

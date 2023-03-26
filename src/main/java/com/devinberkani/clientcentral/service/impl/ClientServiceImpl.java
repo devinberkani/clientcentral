@@ -52,8 +52,8 @@ public class ClientServiceImpl implements ClientService {
     // handle update client
     @Override
     public void updateClient(ClientDto client, Long clientId) {
+        client.setId(clientId);
         Client updatedClient = ClientMapper.mapToClient(client);
-        updatedClient.setId(clientId);
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
         User user = userRepository.findUserById((long)1);
         updatedClient.setUser(user);

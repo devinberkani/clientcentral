@@ -23,6 +23,9 @@ public class ClientMapper {
 
     public static Client mapToClient(ClientDto clientDto) {
         return Client.builder()
+                .id(clientDto.getId())
+                .createdOn(clientDto.getCreatedOn())
+                .updatedOn(clientDto.getUpdatedOn())
                 .firstName(clientDto.getFirstName())
                 .lastName(clientDto.getLastName())
                 .address(clientDto.getAddress())

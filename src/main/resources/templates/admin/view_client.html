@@ -123,7 +123,7 @@
                                             </ul>
                                         </td>
                                         <td>
-                                            <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}"
+                                            <a th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
                                                class="btn btn-primary my-1 my-xl-0">Edit</a>
                                             <a th:href="@{/admin/notes/delete/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
                                                class="btn btn-danger my-1 my-xl-0">Delete</a>

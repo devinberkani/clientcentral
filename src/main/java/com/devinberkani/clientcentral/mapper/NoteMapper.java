@@ -18,8 +18,10 @@ public class NoteMapper {
 
     public static Note mapToNote(NoteDto noteDto) {
         return Note.builder()
+                .id(noteDto.getId())
+                .createdOn(noteDto.getCreatedOn())
+                .updatedOn(noteDto.getUpdatedOn())
                 .content(noteDto.getContent())
-                .files(noteDto.getFiles())
                 .build();
     }
 
