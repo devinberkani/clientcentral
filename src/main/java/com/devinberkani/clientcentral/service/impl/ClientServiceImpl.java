@@ -12,6 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -45,9 +51,9 @@ public class ClientServiceImpl implements ClientService {
 
     // handle update client
     @Override
-    public void updateClient(ClientDto client, Long id) {
+    public void updateClient(ClientDto client, Long clientId) {
         Client updatedClient = ClientMapper.mapToClient(client);
-        updatedClient.setId(id);
+        updatedClient.setId(clientId);
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
         User user = userRepository.findUserById((long)1);
         updatedClient.setUser(user);
@@ -55,14 +61,26 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void deleteClientById(Long id) {
-        clientRepository.deleteClientById(id);
+    public void deleteClientById(Long clientId) {
+
+        // handle deleting corresponding notes and files from the filesystem if a client is deleted
+
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
+        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId);
+        if (Files.exists(deletePath)) {
+            try {
+                FileSystemUtils.deleteRecursively(deletePath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        clientRepository.deleteById(clientId);
     }
 
     // handle find specific client by id
     @Override
-    public ClientDto findClientById(Long id) {
-        Client client = clientRepository.findClientById(id);
+    public ClientDto findClientById(Long clientId) {
+        Client client = clientRepository.findClientById(clientId);
         return ClientMapper.mapToClientDto(client);
     }
 }

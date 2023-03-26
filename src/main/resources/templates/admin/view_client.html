@@ -7,6 +7,22 @@
 <div th:replace="~{admin/fragments :: navbar}"></div>
 <div class="container">
     <div class="row">
+        <!-- client success param alerts -->
+        <div th:if="${param.create}">
+            <div class="alert alert-info dashboard-alert">
+                Note successfully created
+            </div>
+        </div>
+        <div th:if="${param.update}">
+            <div class="alert alert-info dashboard-alert">
+                Note successfully updated
+            </div>
+        </div>
+        <div th:if="${param.delete}">
+            <div class="alert alert-info dashboard-alert">
+                Note successfully deleted
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="card client-info mb-3">
                 <!-- Card Header -->
@@ -109,7 +125,7 @@
                                         <td>
                                             <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}"
                                                class="btn btn-primary my-1 my-xl-0">Edit</a>
-                                            <a th:href="@{/admin/client/delete/{clientId}(clientId=${client.id})}"
+                                            <a th:href="@{/admin/notes/delete/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
                                                class="btn btn-danger my-1 my-xl-0">Delete</a>
                                         </td>
                                     </tr>

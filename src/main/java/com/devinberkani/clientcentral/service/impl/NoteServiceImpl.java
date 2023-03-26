@@ -7,6 +7,13 @@ import com.devinberkani.clientcentral.repository.ClientRepository;
 import com.devinberkani.clientcentral.repository.NoteRepository;
 import com.devinberkani.clientcentral.service.NoteService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -27,5 +34,22 @@ public class NoteServiceImpl implements NoteService {
         // save note to repository
         noteRepository.save(newNote);
         return newNote.getId();
+    }
+
+    @Override
+    public void deleteNote(Long noteId, Long clientId) {
+
+        // handle deleting corresponding files from the filesystem if a note is deleted
+
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
+        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId);
+        if (Files.exists(deletePath)) {
+            try {
+                FileSystemUtils.deleteRecursively(deletePath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        noteRepository.deleteById(noteId);
     }
 }

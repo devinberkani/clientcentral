@@ -40,6 +40,8 @@ public class NoteController {
         return "admin/create_note";
     }
 
+    // handle post create new note
+
     @PostMapping("/client/{clientId}/create")
     public String postCreateNote(@Valid @ModelAttribute("note") NoteDto note,
                                  BindingResult result,
@@ -55,7 +57,18 @@ public class NoteController {
                 fileService.saveNewFile(multipartFile, (long) 1, clientId, noteId);
             }
         }
-        return "redirect:/admin/client/{clientId}";
+        return "redirect:/admin/client/{clientId}?create";
+    }
+
+    // handle delete note
+
+    @GetMapping("/delete/client/{clientId}/note/{noteId}")
+    public String deleteNote(@PathVariable("noteId") Long noteId,
+                             @PathVariable("clientId") Long clientId,
+                             Model model) {
+        noteService.deleteNote(noteId, clientId);
+        model.addAttribute(clientId);
+        return "redirect:/admin/client/{clientId}?delete";
     }
 
 }
