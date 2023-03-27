@@ -49,6 +49,7 @@ public class FileController {
         return "redirect:/admin/upload?formatError";
     }
 
+    // handle download bulk upload csv file template
     @GetMapping("/download/{fileName}")
     public ResponseEntity<Resource> downloadCsvTemplate(@PathVariable String fileName) throws FileNotFoundException {
         Resource resource = fileService.loadFileAsResource(fileName);
@@ -58,6 +59,7 @@ public class FileController {
                 .body(resource);
     }
 
+    // handle download user file from specific client and note
     @GetMapping("/{clientId}/{noteId}/{fileReference}")
     public ResponseEntity<Resource> downloadUserFile(@PathVariable("clientId") Long clientId,
                                                      @PathVariable("noteId") Long noteId,

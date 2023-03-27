@@ -97,6 +97,8 @@ public class ClientController {
         return getPage(page, 1, "desc", model);
     }
 
+    // handle view client with search parameters
+
     @GetMapping("/{clientId}/search")
     public String getSearchViewClient(@PathVariable("clientId") Long clientId,
                                       @RequestParam("p") int pageNo,
@@ -108,7 +110,7 @@ public class ClientController {
         return getPage(page, pageNo, sortDir, model);
     }
 
-    // getPage methods to reduce repetitive code and return dashboard
+    // getPage methods to reduce repetitive code and return correct view client page
     private String getPage(Page<NoteDto> page,
                            int pageNo,
                            String sortDir,

@@ -93,55 +93,53 @@
                         </div>
                     </div>
                     <div class="card-body px-0 py-0">
-                        <div class="table-wrapper">
-                            <div class="table-responsive py-0">
-                                <table class="table table-striped table-hover table-bordered">
-                                    <thead class="table-dark">
-                                    <th style="width:10%">
-                                        <a th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage} + '&d=' + ${reverseSortDir}}">Date</a>
-                                    </th>
-                                    <th style="width:40%">
-                                        Content
-                                    </th>
-                                    <th style="width:25%">
-                                        Attachments
-                                    </th>
-                                    <th style="width:25%">Actions</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="note : ${notes}">
-                                        <td th:text="${#temporals.format(note.createdOn, 'MM/dd/yy')}">Date
-                                            Created
-                                        </td>
-                                        <td th:text="${note.content}">Content</td>
-                                        <td>
-                                            <ul class="list-group">
-                                                <li class="list-group-item" th:each="file : ${note.files}">
-                                                    <a th:href="@{/admin/files/{clientId}/{noteId}/{fileReference}(clientId=${clientId}, noteId=${note.id}, fileReference=${file.fileReference})}"
-                                                       th:text="${file.fileReference}"></a>
-                                                    <!--                                                    <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"-->
-                                                    <!--                                                       th:text="${file.fileReference}"></a>-->
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
-                                               class="btn btn-primary my-1 my-xl-0">Edit</a>
-                                            <a th:href="@{/admin/notes/delete/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
-                                               class="btn btn-danger my-1 my-xl-0">Delete</a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
+                        <div class="table-responsive py-0">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead class="table-dark">
+                                <th style="width:10%">
+                                    <a th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage} + '&d=' + ${reverseSortDir}}">Date</a>
+                                </th>
+                                <th style="width:40%">
+                                    Content
+                                </th>
+                                <th style="width:25%">
+                                    Attachments
+                                </th>
+                                <th style="width:25%">Actions</th>
+                                </thead>
+                                <tbody>
+                                <tr th:each="note : ${notes}">
+                                    <td th:text="${#temporals.format(note.createdOn, 'MM/dd/yy')}">Date
+                                        Created
+                                    </td>
+                                    <td th:text="${note.content}">Content</td>
+                                    <td>
+                                        <ul class="list-group">
+                                            <li class="list-group-item" th:each="file : ${note.files}">
+                                                <a th:href="@{/admin/files/{clientId}/{noteId}/{fileReference}(clientId=${clientId}, noteId=${note.id}, fileReference=${file.fileReference})}"
+                                                   th:text="${file.fileReference}"></a>
+                                                <!--                                                    <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"-->
+                                                <!--                                                       th:text="${file.fileReference}"></a>-->
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
+                                           class="btn btn-primary my-1 my-xl-0">Edit</a>
+                                        <a th:href="@{/admin/notes/delete/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
+                                           class="btn btn-danger my-1 my-xl-0">Delete</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
+
                     </div>
                 </div>
 
                 <!-- pagination -->
 
-                <div th:if="${totalPages > 1}">
+                <div th:if="${totalPages > 1}" class="py-1">
                     <div>
                         <span>
                             <strong style="margin-right: 15px;">Total Notes: [[${totalItems}]]</strong>

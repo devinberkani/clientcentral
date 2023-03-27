@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
+    // handling registering new user
     @Override
     public void saveNewUser(UserDto userDto) {
         User user = new User();

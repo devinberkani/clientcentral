@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +32,7 @@ public class NoteServiceImpl implements NoteService {
         this.noteRepository = noteRepository;
     }
 
+    // handle get page of notes based on client, page number, and sort direction
     @Override
     public Page<NoteDto> getNotesPage(ClientDto clientDto, int pageNo, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by("createdOn").ascending() : Sort.by("createdOn").descending();
@@ -42,6 +42,7 @@ public class NoteServiceImpl implements NoteService {
         return noteRepository.findByClient(client, pageable).map(NoteMapper::mapToNoteDto);
     }
 
+    // handle create new note
     @Override
     public Long saveNewNote(NoteDto note, Long clientId) {
         Note newNote = NoteMapper.mapToNote(note);
@@ -52,10 +53,11 @@ public class NoteServiceImpl implements NoteService {
         return newNote.getId();
     }
 
+    // handle deleting note and corresponding files from the filesystem
     @Override
     public void deleteNote(Long noteId, Long clientId) {
 
-        // handle deleting corresponding files from the filesystem if a note is deleted
+        // handle deleting corresponding files from the filesystem
 
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
         Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId);
@@ -69,12 +71,14 @@ public class NoteServiceImpl implements NoteService {
         noteRepository.deleteById(noteId);
     }
 
+    // handle find note by id
     @Override
     public NoteDto findNoteById(Long noteId) {
         Note note = noteRepository.findNoteById(noteId);
         return NoteMapper.mapToNoteDto(note);
     }
 
+    // handle updating a note
     @Override
     public void updateNote(NoteDto note, Long noteId, Long clientId) {
         note.setId(noteId);

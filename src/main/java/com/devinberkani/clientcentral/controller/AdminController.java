@@ -40,7 +40,7 @@ public class AdminController {
         return getPage(page, query, pageNo, sortField, sortDir, model);
     }
 
-    // getPage methods to reduce repetitive code and return dashboard
+    // getPage method to reduce repetitive code and return correct version of dashboard
     private String getPage(Page<ClientDto> page,
                            String query,
                            int pageNo,

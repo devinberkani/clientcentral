@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -47,7 +48,7 @@ public class FileServiceImpl implements FileService {
         this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
-    // handle converting ClientDto list from FileUtil class to Client list and saving new list of Client to database
+    // handle converting ClientDto list from FileUtil class to Client list and saving newly bulk-uploaded list of Client to database
     @Override
     public void saveCsv(MultipartFile file) {
         try {
@@ -74,10 +75,12 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    // handle saving new user file to a specific client and note
+
     @Override
     public void saveNewFile(MultipartFile multipartFile, Long userId, Long clientId, Long noteId) throws IOException {
         Path uploadPath = Paths.get("src/main/resources/static/file-attachments/user-" + userId + "/client-" + clientId + "/note-" + noteId);
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -94,6 +97,8 @@ public class FileServiceImpl implements FileService {
             throw new IOException("Could not save file: " + fileName, ioe);
         }
     }
+
+    // handle deleting file from database and filesystem
 
     @Override
     public void deleteFile(Long fileId, Long noteId, Long clientId, String fileReference) {
@@ -125,6 +130,8 @@ public class FileServiceImpl implements FileService {
         fileAttachmentRepository.deleteById(fileId);
     }
 
+    // handle deleting directory from filesystem if it is empty
+
     @Override
     public void deleteDirectoryIfEmpty(File directory) {
         File[] files = directory.listFiles();
@@ -150,6 +157,8 @@ public class FileServiceImpl implements FileService {
             throw new FileNotFoundException("File not found: " + fileName);
         }
     }
+
+    // handle load specific user file from path based on specific client and note that belongs to logged-in user
 
     @Override
     public Resource loadFileAsResource(Long userId, Long clientId, Long noteId, String fileName) throws FileNotFoundException {

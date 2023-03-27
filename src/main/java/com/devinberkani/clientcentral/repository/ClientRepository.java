@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
+    // retrieve page of client objects that matches a search query (could be empty) and belongs to the logged-in user
     @Query("SELECT c FROM Client c WHERE c.user.id = :userId AND (CONCAT(LOWER(c.firstName),' ',LOWER(c.lastName)) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Client> findMatchingClients(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
     Client findClientById(Long id);
