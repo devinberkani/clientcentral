@@ -139,7 +139,22 @@ public class FileServiceImpl implements FileService {
     @Override
     public Resource loadFileAsResource(String fileName) throws FileNotFoundException {
         try {
-            Path filePath = Paths.get("src/main/resources/static/downloads").resolve(fileName).normalize();
+            Path filePath = Paths.get("src/main/resources/static/downloads/" + fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return resource;
+            } else {
+                throw new FileNotFoundException("File not found: " + fileName);
+            }
+        } catch (FileNotFoundException | MalformedURLException fileNotFoundException) {
+            throw new FileNotFoundException("File not found: " + fileName);
+        }
+    }
+
+    @Override
+    public Resource loadFileAsResource(Long userId, Long clientId, Long noteId, String fileName) throws FileNotFoundException {
+        try {
+            Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + userId + "/client-" + clientId + "/note-" + noteId + "/" + fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;

@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.FileNotFoundException;
 
 @Controller
-@RequestMapping("/admin/upload")
+@RequestMapping("/admin/files")
 public class FileController {
 
     FileService fileService;
@@ -24,13 +24,13 @@ public class FileController {
 
 
     // handle view bulk upload csv form
-    @GetMapping
+    @GetMapping("/upload")
     public String getUploadCsv() {
         return "admin/upload_form";
     }
 
     // handle submit bulk upload csv form
-    @PostMapping
+    @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file,
                              RedirectAttributes redirectAttributes) {
         if (FileUtil.hasCSVFormat(file)) {
@@ -42,7 +42,7 @@ public class FileController {
                 System.out.println(e.getMessage());
                 String errorMessage = e.getMessage();
                 redirectAttributes.addAttribute("errorMessage", errorMessage);
-                return "redirect:/admin/upload?uploadError";
+                return "redirect:/admin/files/upload?uploadError";
             }
         }
         // if the file isn't a csv, show format error message
@@ -50,9 +50,22 @@ public class FileController {
     }
 
     @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws FileNotFoundException {
+    public ResponseEntity<Resource> downloadCsvTemplate(@PathVariable String fileName) throws FileNotFoundException {
         Resource resource = fileService.loadFileAsResource(fileName);
         return ResponseEntity.ok()
+                // tells the client that the response body should be treated as a file for download, rather than being displayed in the browser
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/{clientId}/{noteId}/{fileReference}")
+    public ResponseEntity<Resource> downloadUserFile(@PathVariable("clientId") Long clientId,
+                                                     @PathVariable("noteId") Long noteId,
+                                                     @PathVariable("fileReference") String fileName) throws FileNotFoundException {
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for getting user files - should get current logged in user
+        Resource resource = fileService.loadFileAsResource((long)1, clientId, noteId, fileName);
+        return ResponseEntity.ok()
+                // tells the client that the response body should be treated as a file for download, rather than being displayed in the browser
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }

@@ -13,4 +13,5 @@ public interface FileService {
     void deleteFile(Long fileId, Long noteId, Long clientId, String fileReference);
     void deleteDirectoryIfEmpty(File directory);
     Resource loadFileAsResource(String fileName) throws FileNotFoundException;
+    Resource loadFileAsResource(Long userId, Long clientId, Long noteId, String fileName) throws FileNotFoundException;
 }
