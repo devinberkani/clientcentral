@@ -1,7 +1,6 @@
 package com.devinberkani.clientcentral.service;
 
 import com.devinberkani.clientcentral.dto.ClientDto;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 
 public interface ClientService {

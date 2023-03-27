@@ -17,6 +17,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    // handle getting user first name for display on navbar
+    @Override
+    public User findUserById(Long userId) {
+        return userRepository.findUserById(userId);
+    }
+
     // returns true if user already exists, false otherwise
     @Override
     public boolean existsByEmail(String email) {

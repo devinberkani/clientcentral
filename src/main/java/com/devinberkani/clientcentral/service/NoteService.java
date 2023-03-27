@@ -4,8 +4,6 @@ import com.devinberkani.clientcentral.dto.ClientDto;
 import com.devinberkani.clientcentral.dto.NoteDto;
 import org.springframework.data.domain.Page;
 
-import java.io.IOException;
-
 public interface NoteService {
 
     Page<NoteDto> getNotesPage(ClientDto clientDto, int pageNo, String sortDir);

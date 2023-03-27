@@ -2,14 +2,13 @@ package com.devinberkani.clientcentral.controller;
 
 import com.devinberkani.clientcentral.dto.ClientDto;
 import com.devinberkani.clientcentral.service.ClientService;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -32,10 +31,10 @@ public class AdminController {
     // handle search dashboard
     @GetMapping("/dashboard/search")
     public String getSearchDashboard(@RequestParam("q") String query,
-                                   @RequestParam("p") int pageNo,
-                                   @RequestParam("s") String sortField,
-                                   @RequestParam("d") String sortDir,
-                                   Model model) {
+                                     @RequestParam("p") int pageNo,
+                                     @RequestParam("s") String sortField,
+                                     @RequestParam("d") String sortDir,
+                                     Model model) {
         Page<ClientDto> page = clientService.findMatchingClients(query, pageNo, sortField, sortDir); // page number should always be one for landing page
         return getPage(page, query, pageNo, sortField, sortDir, model);
     }
