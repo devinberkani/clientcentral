@@ -21,13 +21,13 @@ public class AuthController {
 
     // user login
     @GetMapping("/login")
-    public String userGetLogin() {
+    public String getUserLogin() {
         return "login";
     }
 
     // user view registration form
     @GetMapping("/register")
-    public String userGetRegister(Model model) {
+    public String getUserRegister(Model model) {
         UserDto user = new UserDto();
         model.addAttribute("user", user);
         return "register";
@@ -35,7 +35,7 @@ public class AuthController {
 
     // user submit registration form
     @PostMapping("/register/save")
-    public String userPostRegister(@Valid @ModelAttribute("user") UserDto user, BindingResult result, Model model) {
+    public String postUserRegister(@Valid @ModelAttribute("user") UserDto user, BindingResult result, Model model) {
         if (userService.existsByEmail(user.getEmail())) { // check if user already exists
             result.rejectValue("email", null, "There is already a user with this email");
         }
