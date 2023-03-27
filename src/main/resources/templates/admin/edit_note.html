@@ -24,7 +24,7 @@
                         <input type="hidden" th:field="*{createdOn}">
 
                         <!-- Content -->
-                        <label class="form-label">Content*</label>
+                        <label class="form-label"><strong>Content*</strong></label>
                         <textarea
                                 class="form-control"
                                 id="content"
@@ -38,7 +38,7 @@
 
                     <!-- Files -->
                     <div class="mb-3">
-                        <label class="form-label">Add File Attachments</label>
+                        <label class="form-label"><strong>Add File Attachments</strong></label>
                         <input
                                 type="file"
                                 class="form-control"
@@ -50,7 +50,7 @@
 
                     <!-- Existing Files -->
                     <div class="mb-3">
-                        <label class="form-label">Existing File Attachments</label>
+                        <label class="form-label"><strong>Existing File Attachments</strong></label>
                         <ul class="list-group">
                             <li class="list-group-item" th:each="file : ${note.files}">
                                 <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"

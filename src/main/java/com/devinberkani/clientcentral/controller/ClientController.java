@@ -1,22 +1,28 @@
 package com.devinberkani.clientcentral.controller;
 
 import com.devinberkani.clientcentral.dto.ClientDto;
+import com.devinberkani.clientcentral.dto.NoteDto;
 import com.devinberkani.clientcentral.service.ClientService;
+import com.devinberkani.clientcentral.service.NoteService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/client")
 public class ClientController {
     ClientService clientService;
+    NoteService noteService;
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, NoteService noteService) {
         this.clientService = clientService;
+        this.noteService = noteService;
     }
 
     // handle view create new client page
@@ -87,6 +93,33 @@ public class ClientController {
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
         model.addAttribute("client", client);
+        Page<NoteDto> page = noteService.getNotesPage(client, 1, "desc");
+        return getPage(page, 1, "desc", model);
+    }
+
+    @GetMapping("/{clientId}/search")
+    public String getSearchViewClient(@PathVariable("clientId") Long clientId,
+                                      @RequestParam("p") int pageNo,
+                                      @RequestParam("d") String sortDir,
+                                      Model model) {
+        ClientDto client = clientService.findClientById(clientId);
+        model.addAttribute("client", client);
+        Page<NoteDto> page = noteService.getNotesPage(client, pageNo, sortDir);
+        return getPage(page, pageNo, sortDir, model);
+    }
+
+    // getPage methods to reduce repetitive code and return dashboard
+    private String getPage(Page<NoteDto> page,
+                           int pageNo,
+                           String sortDir,
+                           Model model) {
+        List<NoteDto> notes = page.getContent();
+        model.addAttribute("notes", notes);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equalsIgnoreCase("asc") ? "desc" : "asc");
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to use in filepath when retrieving file attachments - should get current logged-in user
         model.addAttribute("userId", 1);
         return "admin/view_client";

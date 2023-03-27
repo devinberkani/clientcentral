@@ -74,14 +74,13 @@ public class NoteController {
 
     // handle submit edit note
     @PostMapping("/edit/client/{clientId}/note/{noteId}")
-    public String postEditNote(@ModelAttribute("note") NoteDto note,
+    public String postEditNote(@Valid @ModelAttribute("note") NoteDto note,
                                BindingResult result,
                                @PathVariable("clientId") Long clientId,
                                @PathVariable("noteId") Long noteId,
                                Model model,
                                @RequestParam("multipartFiles") MultipartFile[] multipartFiles) throws IOException {
         if (result.hasErrors()) {
-            model.addAttribute("note", note);
             return "admin/edit_note";
         }
 
