@@ -118,8 +118,6 @@
                                             <li class="list-group-item" th:each="file : ${note.files}">
                                                 <a th:href="@{/admin/files/{clientId}/{noteId}/{fileReference}(clientId=${clientId}, noteId=${note.id}, fileReference=${file.fileReference})}"
                                                    th:text="${file.fileReference}"></a>
-                                                <!--                                                    <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"-->
-                                                <!--                                                       th:text="${file.fileReference}"></a>-->
                                             </li>
                                         </ul>
                                     </td>
