@@ -52,7 +52,7 @@
                         <input type="hidden" name="s" th:value="${sortField}"/>
                         <input type="hidden" name="d" th:value="${sortDir}"/>
                         <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit">Search</button>
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Search</button>
                         <a th:if="${query != null && query != ''}" th:href="@{/admin/dashboard}"
                            class="btn btn-secondary" type="button">Clear</a>
                       </span>
@@ -78,9 +78,9 @@
                 <a th:href="@{'/admin/dashboard/search?q=' + ${query} + '&p=' + ${currentPage} + '&s=lastName&d=' + ${reverseSortDir}}">Last
                     Name</a>
             </th>
-            <th style="width:20%">Phone Number</th>
+            <th style="width:18%">Phone Number</th>
             <th style="width:20%">Email</th>
-            <th style="width:20%">Actions</th>
+            <th style="width:23%">Actions</th>
             </thead>
             <tbody>
             <tr th:each="client : ${clients}">
@@ -91,10 +91,10 @@
                 <td th:text="${client.email}">user@gmail.com</td>
                 <td>
                     <a th:href="@{/admin/client/edit/{clientId}(clientId=${client.id})}"
-                       class="btn btn-primary my-1 my-xl-0">Edit</a>
+                       class="btn btn-primary my-1 my-xl-0"><i class="bi bi-pencil-square"></i> Edit</a>
                     <a th:href="@{/admin/client/delete/{clientId}(clientId=${client.id})}"
-                       class="btn btn-danger my-1 my-xl-0">Delete</a>
-                    <a th:href="@{/admin/client/{clientId}(clientId=${client.id})}" class="btn btn-info my-1 my-xl-0">View</a>
+                       class="btn btn-danger my-1 my-xl-0"><i class="bi bi-trash"></i> Delete</a>
+                    <a th:href="@{/admin/client/{clientId}(clientId=${client.id})}" class="btn btn-info my-1 my-xl-0"><i class="bi bi-file-earmark-person"></i> View</a>
                 </td>
             </tr>
             </tbody>

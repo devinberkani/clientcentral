@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
+// stores the specified model attributes in the HTTP session to keep it available across multiple HTTP requests
+@SessionAttributes("note")
 @RequestMapping("/admin/notes")
 public class NoteController {
 
@@ -81,6 +83,7 @@ public class NoteController {
                                Model model,
                                @RequestParam("multipartFiles") MultipartFile[] multipartFiles) throws IOException {
         if (result.hasErrors()) {
+            model.addAttribute("note", note);
             return "admin/edit_note";
         }
 
