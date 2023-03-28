@@ -10,10 +10,11 @@
         <div class="col-md-6">
             <div style="max-height: 100%; overflow-y: auto;">
                 <div class="card">
-                    <!-- Card Header -->
+
+                    <!-- Birthdays Today -->
                     <div class="card-header d-flex justify-content-between align-items-center notes-header">
                         <div class="col text-center">
-                            <h2>Today's Birthdays</h2>
+                            <h2 th:text="${totalTodayBirthdayItems} + ' ' + ${totalTodayBirthdayItems == 1 ? 'Birthday' : 'Birthdays'} + ' Today'"></h2>
                         </div>
                     </div>
                     <div class="card-body px-0 py-0">
@@ -31,26 +32,15 @@
                                 </th>
                                 </thead>
                                 <tbody>
-                                <tr th:each="note : ${notes}">
-                                    <td th:text="${#temporals.format(note.createdOn, 'MM/dd/yy')}">Date
-                                        Created
-                                    </td>
-                                    <td th:text="${note.content}">Content</td>
-                                    <td>
-                                        <ul class="list-group">
-                                            <li class="list-group-item" th:each="file : ${note.files}">
-                                                <a th:href="@{/admin/files/{clientId}/{noteId}/{fileReference}(clientId=${clientId}, noteId=${note.id}, fileReference=${file.fileReference})}"
-                                                   th:text="${file.fileReference}"></a>
-                                            </li>
-                                        </ul>
+                                <tr th:each="client : ${birthdaysToday}">
+                                    <td th:text="${client.firstName} + ' ' + ${client.lastName}">John Smith</td>
+                                    <td th:text="${#temporals.format(client.birthday, 'MMMM dd')}">
+                                        January 1
                                     </td>
                                     <td>
-                                        <a th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
-                                           class="btn btn-primary my-1 my-xl-0"><i class="bi bi-pencil-square"></i>
-                                            Edit</a>
-                                        <a th:href="@{/admin/notes/delete/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
-                                           class="btn btn-danger my-1 my-xl-0"><i class="bi bi-trash"></i>
-                                            Delete</a>
+                                        <a th:href="@{/admin/client/{clientId}(clientId=${client.id})}"
+                                           class="btn btn-primary my-1 my-xl-0"><i
+                                                class="bi bi-file-earmark-person"></i> View</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -62,41 +52,41 @@
 
                 <!-- pagination -->
 
-                <div th:if="${totalPages > 1}" class="py-1">
+                <div th:if="${totalTodayBirthdayPages > 1}" class="py-1">
                     <div>
                         <span>
-                            <strong style="margin-right: 15px;">Total Notes: [[${totalItems}]]</strong>
 
                         <span style="margin-right: 5px">
-                            <a th:if="${currentPage > 1}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${1} + '&d=' + ${sortDir}}">First</a>
-                            <span th:unless="${currentPage > 1}">First</span>
+                            <a th:if="${todayPageNo > 1}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${1} + '&p2=' + ${upcomingPageNo} + '&d=' + ${sortDir}}">First</a>
+                            <span th:unless="${todayPageNo > 1}">First</span>
                         </span>
 
                         <span style="margin-right: 15px">
-                            <a th:if="${currentPage > 1}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage - 1} + '&d=' + ${sortDir}}">Prev</a>
-                            <span th:unless="${currentPage > 1}">Prev</span>
+                            <a th:if="${todayPageNo > 1}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo - 1} + '&p2=' + ${upcomingPageNo} + '&d=' + ${sortDir}}">Prev</a>
+                            <span th:unless="${todayPageNo > 1}">Prev</span>
                         </span>
 
                         <span style="margin-right: 15px;">
-                            <span style="margin-right: 5px" th:each="i : ${#numbers.sequence(1, totalPages)}">
-                                <a th:if="${currentPage != i}"
-                                   th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${i} + '&d=' + ${sortDir}}">[[${i}]]</a>
-                                <span th:unless="${currentPage != i}">[[${i}]]</span>
+                            <span style="margin-right: 5px"
+                                  th:each="i : ${#numbers.sequence(1, totalTodayBirthdayPages)}">
+                                <a th:if="${todayPageNo != i}"
+                                   th:href="@{'/admin/reminders/search?p1=' + ${i} + '&p2=' + ${upcomingPageNo} + '&d=' + ${sortDir}}">[[${i}]]</a>
+                                <span th:unless="${todayPageNo != i}">[[${i}]]</span>
                             </span>
                         </span>
 
                         <span style="margin-right: 5px">
-                            <a th:if="${currentPage < totalPages}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage + 1} + '&d=' + ${sortDir}}">Next</a>
-                            <span th:unless="${currentPage < totalPages}">Next</span>
+                            <a th:if="${todayPageNo < totalTodayBirthdayPages}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo + 1} + '&p2=' + ${upcomingPageNo} + '&d=' + ${sortDir}}">Next</a>
+                            <span th:unless="${todayPageNo < totalTodayBirthdayPages}">Next</span>
                         </span>
 
                         <span>
-                            <a th:if="${currentPage < totalPages}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${totalPages} + '&d=' + ${sortDir}}">Last</a>
-                            <span th:unless="${currentPage < totalPages}">Last</span>
+                            <a th:if="${todayPageNo < totalTodayBirthdayPages}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${totalTodayBirthdayPages} + '&p2=' + ${upcomingPageNo} + '&d=' + ${sortDir}}">Last</a>
+                            <span th:unless="${todayPageNo < totalTodayBirthdayPages}">Last</span>
                         </span>
 
                         </span>
@@ -109,7 +99,9 @@
         <div class="col-md-6">
             <div style="max-height: 100%; overflow-y: auto;">
                 <div class="card">
-                    <!-- Card Header -->
+
+                    <!-- Upcoming Birthdays -->
+
                     <div class="card-header d-flex justify-content-between align-items-center notes-header">
                         <div class="col text-center">
                             <h2>Upcoming Birthdays</h2>
@@ -123,33 +115,22 @@
                                     Client
                                 </th>
                                 <th style="width:40%">
-                                    <a th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage} + '&d=' + ${reverseSortDir}}">Birthday</a>
+                                    <a th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo} + '&p2=' + ${upcomingPageNo} + '&d=' + ${reverseSortDir}}">Birthday</a>
                                 </th>
                                 <th style="width:20%">
                                     Contact
                                 </th>
                                 </thead>
                                 <tbody>
-                                <tr th:each="note : ${notes}">
-                                    <td th:text="${#temporals.format(note.createdOn, 'MM/dd/yy')}">Date
-                                        Created
-                                    </td>
-                                    <td th:text="${note.content}">Content</td>
-                                    <td>
-                                        <ul class="list-group">
-                                            <li class="list-group-item" th:each="file : ${note.files}">
-                                                <a th:href="@{/admin/files/{clientId}/{noteId}/{fileReference}(clientId=${clientId}, noteId=${note.id}, fileReference=${file.fileReference})}"
-                                                   th:text="${file.fileReference}"></a>
-                                            </li>
-                                        </ul>
+                                <tr th:each="client : ${upcomingBirthdays}">
+                                    <td th:text="${client.firstName} + ' ' + ${client.lastName}">John Smith</td>
+                                    <td th:text="${#temporals.format(client.birthday, 'MMMM dd')}">
+                                        January 1
                                     </td>
                                     <td>
-                                        <a th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
-                                           class="btn btn-primary my-1 my-xl-0"><i class="bi bi-pencil-square"></i>
-                                            Edit</a>
-                                        <a th:href="@{/admin/notes/delete/client/{clientId}/note/{noteId}(clientId=${client.id}, noteId=${note.id})}"
-                                           class="btn btn-danger my-1 my-xl-0"><i class="bi bi-trash"></i>
-                                            Delete</a>
+                                        <a th:href="@{/admin/client/{clientId}(clientId=${client.id})}"
+                                           class="btn btn-primary my-1 my-xl-0"><i
+                                                class="bi bi-file-earmark-person"></i> View</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -161,41 +142,41 @@
 
                 <!-- pagination -->
 
-                <div th:if="${totalPages > 1}" class="py-1">
+                <div th:if="${totalUpcomingBirthdayPages > 1}" class="py-1">
                     <div>
                         <span>
-                            <strong style="margin-right: 15px;">Total Notes: [[${totalItems}]]</strong>
 
                         <span style="margin-right: 5px">
-                            <a th:if="${currentPage > 1}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${1} + '&d=' + ${sortDir}}">First</a>
-                            <span th:unless="${currentPage > 1}">First</span>
+                            <a th:if="${upcomingPageNo > 1}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo} + '&p2=' + ${1} + '&d=' + ${sortDir}}">First</a>
+                            <span th:unless="${upcomingPageNo > 1}">First</span>
                         </span>
 
                         <span style="margin-right: 15px">
-                            <a th:if="${currentPage > 1}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage - 1} + '&d=' + ${sortDir}}">Prev</a>
-                            <span th:unless="${currentPage > 1}">Prev</span>
+                            <a th:if="${upcomingPageNo > 1}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo} + '&p2=' + ${upcomingPageNo - 1} + '&d=' + ${sortDir}}">Prev</a>
+                            <span th:unless="${upcomingPageNo > 1}">Prev</span>
                         </span>
 
                         <span style="margin-right: 15px;">
-                            <span style="margin-right: 5px" th:each="i : ${#numbers.sequence(1, totalPages)}">
-                                <a th:if="${currentPage != i}"
-                                   th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${i} + '&d=' + ${sortDir}}">[[${i}]]</a>
-                                <span th:unless="${currentPage != i}">[[${i}]]</span>
+                            <span style="margin-right: 5px"
+                                  th:each="i : ${#numbers.sequence(1, totalUpcomingBirthdayPages)}">
+                                <a th:if="${upcomingPageNo != i}"
+                                   th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo} + '&p2=' + ${i} + '&d=' + ${sortDir}}">[[${i}]]</a>
+                                <span th:unless="${upcomingPageNo != i}">[[${i}]]</span>
                             </span>
                         </span>
 
                         <span style="margin-right: 5px">
-                            <a th:if="${currentPage < totalPages}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage + 1} + '&d=' + ${sortDir}}">Next</a>
-                            <span th:unless="${currentPage < totalPages}">Next</span>
+                            <a th:if="${upcomingPageNo < totalUpcomingBirthdayPages}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo} + '&p2=' + ${upcomingPageNo + 1} + '&d=' + ${sortDir}}">Next</a>
+                            <span th:unless="${upcomingPageNo < totalUpcomingBirthdayPages}">Next</span>
                         </span>
 
                         <span>
-                            <a th:if="${currentPage < totalPages}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${totalPages} + '&d=' + ${sortDir}}">Last</a>
-                            <span th:unless="${currentPage < totalPages}">Last</span>
+                            <a th:if="${upcomingPageNo < totalUpcomingBirthdayPages}"
+                               th:href="@{'/admin/reminders/search?p1=' + ${todayPageNo} + '&p2=' + ${totalUpcomingBirthdayPages} + '&d=' + ${sortDir}}">Last</a>
+                            <span th:unless="${upcomingPageNo < totalUpcomingBirthdayPages}">Last</span>
                         </span>
 
                         </span>

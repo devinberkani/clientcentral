@@ -42,7 +42,7 @@ th a:hover {
 }
 
 .table-responsive {
-    height: 475px;
+    max-height: 475px;
     overflow:scroll;
 }
 

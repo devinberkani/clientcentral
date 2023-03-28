@@ -24,7 +24,7 @@
                     <li>Phone number must be in format <em>"555-555-5555"</em></li>
                     <li>Birthday must be in format <em>"YYYY-MM-DD"</em></li>
                 </ul>
-                <form action="/admin/upload" method="post" enctype="multipart/form-data">
+                <form action="/admin/files/upload" method="post" enctype="multipart/form-data">
                     <!-- client error param alerts -->
                     <div th:if="${param.formatError}">
                         <div class="alert alert-danger">

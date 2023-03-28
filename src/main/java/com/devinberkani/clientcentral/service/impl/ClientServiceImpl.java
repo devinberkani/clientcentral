@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -84,5 +85,24 @@ public class ClientServiceImpl implements ClientService {
     public ClientDto findClientById(Long clientId) {
         Client client = clientRepository.findClientById(clientId);
         return ClientMapper.mapToClientDto(client);
+    }
+
+    // handle get today's birthdays
+    @Override
+    public Page<ClientDto> getTodayBirthdays(int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 10);
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
+        User user = userRepository.findUserById((long)1);
+        return clientRepository.findByBirthdayAndUser(LocalDate.now(), user, pageable).map(ClientMapper::mapToClientDto);
+    }
+
+    // handle get upcoming birthdays
+    @Override
+    public Page<ClientDto> getUpcomingBirthdays(int pageNo, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by("birthday").ascending() : Sort.by("birthday").descending();
+        Pageable pageable = PageRequest.of(pageNo - 1, 10, sort);
+        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
+        User user = userRepository.findUserById((long)1);
+        return clientRepository.findByBirthdayAfterAndUser(LocalDate.now(), user, pageable).map(ClientMapper::mapToClientDto);
     }
 }

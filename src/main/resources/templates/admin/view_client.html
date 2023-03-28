@@ -97,7 +97,7 @@
                             <table class="table table-striped table-hover table-bordered">
                                 <thead class="table-dark">
                                 <th style="width:10%">
-                                    <a th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage} + '&d=' + ${reverseSortDir}}">Date</a>
+                                    <a th:href="@{'/admin/client/' + ${clientId} + '/search?p=' + ${currentPage} + '&d=' + ${reverseSortDir}}">Date</a>
                                 </th>
                                 <th style="width:40%">
                                     Content
@@ -144,33 +144,33 @@
 
                         <span style="margin-right: 5px">
                             <a th:if="${currentPage > 1}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${1} + '&d=' + ${sortDir}}">First</a>
+                               th:href="@{'/admin/client/' + ${clientId} + '/search?p=' + ${1} + '&d=' + ${sortDir}}">First</a>
                             <span th:unless="${currentPage > 1}">First</span>
                         </span>
 
                         <span style="margin-right: 15px">
                             <a th:if="${currentPage > 1}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage - 1} + '&d=' + ${sortDir}}">Prev</a>
+                               th:href="@{'/admin/client/' + ${clientId} + '/search?p=' + ${currentPage - 1} + '&d=' + ${sortDir}}">Prev</a>
                             <span th:unless="${currentPage > 1}">Prev</span>
                         </span>
 
                         <span style="margin-right: 15px;">
                             <span style="margin-right: 5px" th:each="i : ${#numbers.sequence(1, totalPages)}">
                                 <a th:if="${currentPage != i}"
-                                   th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${i} + '&d=' + ${sortDir}}">[[${i}]]</a>
+                                   th:href="@{'/admin/client/' + ${clientId} + '/search?p=' + ${i} + '&d=' + ${sortDir}}">[[${i}]]</a>
                                 <span th:unless="${currentPage != i}">[[${i}]]</span>
                             </span>
                         </span>
 
                         <span style="margin-right: 5px">
                             <a th:if="${currentPage < totalPages}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${currentPage + 1} + '&d=' + ${sortDir}}">Next</a>
+                               th:href="@{'/admin/client/' + ${clientId} + '/search?p=' + ${currentPage + 1} + '&d=' + ${sortDir}}">Next</a>
                             <span th:unless="${currentPage < totalPages}">Next</span>
                         </span>
 
                         <span>
                             <a th:if="${currentPage < totalPages}"
-                               th:href="@{'/admin/client/' + ${clientId} + '/search?&p=' + ${totalPages} + '&d=' + ${sortDir}}">Last</a>
+                               th:href="@{'/admin/client/' + ${clientId} + '/search?p=' + ${totalPages} + '&d=' + ${sortDir}}">Last</a>
                             <span th:unless="${currentPage < totalPages}">Last</span>
                         </span>
 
