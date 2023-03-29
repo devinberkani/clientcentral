@@ -93,16 +93,16 @@ public class ClientServiceImpl implements ClientService {
         Pageable pageable = PageRequest.of(pageNo - 1, 10);
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
         User user = userRepository.findUserById((long)1);
-        return clientRepository.findByBirthdayAndUser(LocalDate.now(), user, pageable).map(ClientMapper::mapToClientDto);
+        return clientRepository.getTodayBirthdays(user, pageable).map(ClientMapper::mapToClientDto);
     }
 
     // handle get upcoming birthdays
     @Override
     public Page<ClientDto> getUpcomingBirthdays(int pageNo, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by("birthday").ascending() : Sort.by("birthday").descending();
-        Pageable pageable = PageRequest.of(pageNo - 1, 10, sort);
+        Pageable pageable = PageRequest.of(pageNo - 1, 10);
         // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
         User user = userRepository.findUserById((long)1);
-        return clientRepository.findByBirthdayAfterAndUser(LocalDate.now(), user, pageable).map(ClientMapper::mapToClientDto);
+        Page<Client> page = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? clientRepository.getUpcomingBirthdaysAsc(user, pageable) : clientRepository.getUpcomingBirthdaysDesc(user, pageable);
+        return page.map(ClientMapper::mapToClientDto);
     }
 }
