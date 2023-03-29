@@ -102,8 +102,6 @@
                                 class="form-control"
                                 id="birthday"
                                 placeholder="Enter client's birthday"
-                                th:min="${currentYear}"
-                                th:max="${nextYear}"
                                 th:field="*{birthday}"
                         />
                         <p th:if="${#fields.hasErrors('birthday')}" class="text-danger" th:errors="*{birthday}"></p>
