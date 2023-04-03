@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class AuthController {
@@ -28,24 +29,24 @@ public class AuthController {
     // handle view user registration form
     @GetMapping("/register")
     public String getUserRegister(Model model) {
-        UserDto user = new UserDto();
-        model.addAttribute("user", user);
+        UserDto newUser = new UserDto();
+        model.addAttribute("newUser", newUser);
         return "register";
     }
 
     // handle submit user registration form
     @PostMapping("/register/save")
-    public String postUserRegister(@Valid @ModelAttribute("user") UserDto user,
+    public String postUserRegister(@Valid @ModelAttribute("newUser") UserDto newUser,
                                    BindingResult result,
                                    Model model) {
-        if (userService.existsByEmail(user.getEmail())) { // check if user already exists
+        if (userService.existsByEmail(newUser.getEmail())) { // check if user already exists
             result.rejectValue("email", null, "There is already a user with this email");
         }
         if (result.hasErrors()) { // check if form has errors
-            model.addAttribute("user",user);
+            model.addAttribute("user",newUser);
             return "register";
         }
-        userService.saveNewUser(user);
+        userService.saveNewUser(newUser);
         return "redirect:/register?success"; // pass success parameter
     }
 

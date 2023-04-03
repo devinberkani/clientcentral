@@ -4,18 +4,19 @@ import com.devinberkani.clientcentral.dto.UserDto;
 import com.devinberkani.clientcentral.entity.User;
 import com.devinberkani.clientcentral.repository.UserRepository;
 import com.devinberkani.clientcentral.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    // still need password encoder
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-
 
     // handle getting user first name for display on navbar
     @Override
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
     }
 }
