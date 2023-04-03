@@ -5,7 +5,7 @@
 
 /* ALERT STYLING */
 
-.alert {
+.admin-alert {
     height: 70px;
     display: flex;
     justify-content: space-between;

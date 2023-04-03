@@ -17,28 +17,28 @@
 
         <!-- client success param alerts -->
         <div th:if="${param.create}">
-            <div class="alert alert-success">
+            <div class="alert alert-success admin-alert">
                 Client successfully created
                 <a class="btn btn-success alert-btn" th:href="@{/admin/client/{clientId}(clientId=${param.create})}">View
                     Client</a>
             </div>
         </div>
         <div th:if="${param.update}">
-            <div class="alert alert-success">
+            <div class="alert alert-success admin-alert">
                 Client successfully updated
                 <a class="btn btn-success alert-btn" th:href="@{/admin/client/{clientId}(clientId=${param.update})}">View
                     Client</a>
             </div>
         </div>
         <div th:if="${param.delete}">
-            <div class="alert alert-success">
+            <div class="alert alert-success admin-alert">
                 Client successfully deleted
             </div>
         </div>
 
         <!-- csv success param alerts -->
         <div th:if="${param.uploadSuccess}">
-            <div class="alert alert-success">
+            <div class="alert alert-success admin-alert">
                 All clients successfully added
             </div>
         </div>

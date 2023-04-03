@@ -27,12 +27,12 @@
                 <form action="/admin/files/upload" method="post" enctype="multipart/form-data">
                     <!-- client error param alerts -->
                     <div th:if="${param.formatError}">
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger admin-alert">
                             Format Error: Please upload a CSV file
                         </div>
                     </div>
                     <div th:if="${param.uploadError}">
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger admin-alert">
                             Upload Error: <span th:text="'[' + ${param.errorMessage} + ']'"></span> Please check CSV formatting and try again
                         </div>
                     </div>
