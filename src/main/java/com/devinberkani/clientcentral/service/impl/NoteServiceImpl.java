@@ -4,11 +4,14 @@ import com.devinberkani.clientcentral.dto.ClientDto;
 import com.devinberkani.clientcentral.dto.NoteDto;
 import com.devinberkani.clientcentral.entity.Client;
 import com.devinberkani.clientcentral.entity.Note;
+import com.devinberkani.clientcentral.entity.User;
 import com.devinberkani.clientcentral.mapper.ClientMapper;
 import com.devinberkani.clientcentral.mapper.NoteMapper;
 import com.devinberkani.clientcentral.repository.ClientRepository;
 import com.devinberkani.clientcentral.repository.NoteRepository;
 import com.devinberkani.clientcentral.service.NoteService;
+import com.devinberkani.clientcentral.service.UserService;
+import com.devinberkani.clientcentral.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,16 +23,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 @Service
 public class NoteServiceImpl implements NoteService {
 
     ClientRepository clientRepository;
     NoteRepository noteRepository;
+    UserService userService;
 
-    public NoteServiceImpl(ClientRepository clientRepository, NoteRepository noteRepository) {
+    public NoteServiceImpl(ClientRepository clientRepository, NoteRepository noteRepository, UserService userService) {
         this.clientRepository = clientRepository;
         this.noteRepository = noteRepository;
+        this.userService = userService;
     }
 
     // handle get page of notes based on client, page number, and sort direction
@@ -38,7 +44,6 @@ public class NoteServiceImpl implements NoteService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by("createdOn").ascending() : Sort.by("createdOn").descending();
         Pageable pageable = PageRequest.of(pageNo - 1, 5, sort);
         Client client = ClientMapper.mapToClient(clientDto);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to find list of clients for dashboard - should get current logged in user
         return noteRepository.findByClient(client, pageable).map(NoteMapper::mapToNoteDto);
     }
 
@@ -46,8 +51,10 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Long saveNewNote(NoteDto note, Long clientId) {
         Note newNote = NoteMapper.mapToNote(note);
+        // get logged in user
+        User user = userService.getCurrentUser();
         // set client w/ client id as owner for note
-        newNote.setClient(clientRepository.findClientById(clientId));
+        newNote.setClient(clientRepository.findClientByIdAndUser(clientId, user));
         // save note to repository
         noteRepository.save(newNote);
         return newNote.getId();
@@ -57,10 +64,11 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public void deleteNote(Long noteId, Long clientId) {
 
-        // handle deleting corresponding files from the filesystem
+        // get logged in user id
+        Long currentUserId = userService.getCurrentUser().getId();
 
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
-        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId);
+        // handle deleting corresponding files from the filesystem
+        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
         if (Files.exists(deletePath)) {
             try {
                 FileSystemUtils.deleteRecursively(deletePath);
@@ -75,7 +83,9 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public NoteDto findNoteById(Long noteId) {
         Note note = noteRepository.findNoteById(noteId);
-        return NoteMapper.mapToNoteDto(note);
+        // get logged in user id
+        Long userId = userService.getCurrentUser().getId();
+        return SecurityUtils.authenticateOwnership(note, userId) ? NoteMapper.mapToNoteDto(note) : null;
     }
 
     // handle updating a note
@@ -83,7 +93,9 @@ public class NoteServiceImpl implements NoteService {
     public void updateNote(NoteDto note, Long noteId, Long clientId) {
         note.setId(noteId);
         Note updatedNote = NoteMapper.mapToNote(note);
-        updatedNote.setClient(clientRepository.findClientById(clientId));
+        // get logged in user
+        User user = userService.getCurrentUser();
+        updatedNote.setClient(clientRepository.findClientByIdAndUser(clientId, user));
         noteRepository.save(updatedNote);
     }
 }

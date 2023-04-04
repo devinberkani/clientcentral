@@ -4,6 +4,7 @@ import com.devinberkani.clientcentral.dto.UserDto;
 import com.devinberkani.clientcentral.entity.User;
 import com.devinberkani.clientcentral.repository.UserRepository;
 import com.devinberkani.clientcentral.service.UserService;
+import com.devinberkani.clientcentral.util.SecurityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,16 +19,16 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // handle getting user first name for display on navbar
-    @Override
-    public User findUserById(Long userId) {
-        return userRepository.findUserById(userId);
-    }
-
     // returns true if user already exists, false otherwise
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    // handle find user by email
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
     // handling registering new user
@@ -42,7 +43,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+    public User getCurrentUser() {
+        // Get the current user from SecurityUtils
+        org.springframework.security.core.userdetails.User currentUser = SecurityUtils.getCurrentUser();
+
+        // Check if the current user is not null and has a non-null username
+        return currentUser != null && currentUser.getUsername() != null ? findUserByEmail(currentUser.getUsername()) : null;
     }
 }

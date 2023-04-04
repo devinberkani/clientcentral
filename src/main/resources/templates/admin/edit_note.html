@@ -53,7 +53,7 @@
                         <label class="form-label"><strong>Existing File Attachments</strong></label>
                         <ul class="list-group">
                             <li class="list-group-item" th:each="file : ${note.files}">
-                                <a th:href="@{/file-attachments/{userId}/{clientId}/{noteId}/{fileReference}(userId= 'user-' + ${userId}, clientId= 'client-' +  ${clientId}, noteId= 'note-' + ${note.id}, fileReference=${file.fileReference})}"
+                                <a th:href="@{/admin/files/{clientId}/{noteId}/{fileReference}(clientId=${clientId}, noteId=${note.id}, fileReference=${file.fileReference})}"
                                    th:text="${file.fileReference}"></a>
                                 <a class="btn btn-danger file-delete" th:href="@{/admin/notes/edit/client/{clientId}/note/{noteId}/delete/file/{fileId}/{fileReference}(clientId=${clientId}, noteId=${noteId}, fileId=${file.id},fileReference=${file.fileReference})}">
                                     <i class="bi bi-trash"></i>

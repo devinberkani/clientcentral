@@ -64,8 +64,7 @@ public class FileController {
     public ResponseEntity<Resource> downloadUserFile(@PathVariable("clientId") Long clientId,
                                                      @PathVariable("noteId") Long noteId,
                                                      @PathVariable("fileReference") String fileName) throws FileNotFoundException {
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for getting user files - should get current logged in user
-        Resource resource = fileService.loadFileAsResource((long)1, clientId, noteId, fileName);
+        Resource resource = fileService.loadFileAsResource(clientId, noteId, fileName);
         return ResponseEntity.ok()
                 // tells the client that the response body should be treated as a file for download, rather than being displayed in the browser
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")

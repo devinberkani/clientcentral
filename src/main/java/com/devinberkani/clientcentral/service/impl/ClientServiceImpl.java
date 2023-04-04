@@ -7,6 +7,7 @@ import com.devinberkani.clientcentral.mapper.ClientMapper;
 import com.devinberkani.clientcentral.repository.ClientRepository;
 import com.devinberkani.clientcentral.repository.UserRepository;
 import com.devinberkani.clientcentral.service.ClientService;
+import com.devinberkani.clientcentral.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,17 +19,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
     ClientRepository clientRepository;
     UserRepository userRepository;
+    UserService userService;
 
-    public ClientServiceImpl(ClientRepository clientRepository, UserRepository userRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, UserRepository userRepository, UserService userService) {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     // handle find all matching clients (based query parameters) for user dashboard
@@ -36,16 +38,17 @@ public class ClientServiceImpl implements ClientService {
     public Page<ClientDto> findMatchingClients(String query, int pageNo, String sortField, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo - 1, 10, sort);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to find list of clients for dashboard - should get current logged in user
-        return clientRepository.findMatchingClients((long)1, query, pageable).map(ClientMapper::mapToClientDto);
+        // get logged in user id
+        Long currentUserId = userService.getCurrentUser().getId();
+        return clientRepository.findMatchingClients(currentUserId, query, pageable).map(ClientMapper::mapToClientDto);
     }
 
     // handle create new client
     @Override
     public Long saveNewClient(ClientDto client) {
         Client newClient = ClientMapper.mapToClient(client);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
-        User user = userRepository.findUserById((long)1);
+        // get logged in user
+        User user = userService.getCurrentUser();
         newClient.setUser(user);
         clientRepository.save(newClient);
         return newClient.getId();
@@ -56,8 +59,8 @@ public class ClientServiceImpl implements ClientService {
     public void updateClient(ClientDto client, Long clientId) {
         client.setId(clientId);
         Client updatedClient = ClientMapper.mapToClient(client);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
-        User user = userRepository.findUserById((long)1);
+        // get logged in user
+        User user = userService.getCurrentUser();
         updatedClient.setUser(user);
         clientRepository.save(updatedClient);
     }
@@ -66,10 +69,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void deleteClientById(Long clientId) {
 
-        // handle deleting corresponding notes and files from the filesystem if a client is deleted
+        // get logged in user id
+        Long currentUserId = userService.getCurrentUser().getId();
 
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
-        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId);
+        // handle deleting corresponding notes and files from the filesystem if a client is deleted
+        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
         if (Files.exists(deletePath)) {
             try {
                 FileSystemUtils.deleteRecursively(deletePath);
@@ -83,7 +87,9 @@ public class ClientServiceImpl implements ClientService {
     // handle find specific client by id
     @Override
     public ClientDto findClientById(Long clientId) {
-        Client client = clientRepository.findClientById(clientId);
+        // get logged in user
+        User user = userService.getCurrentUser();
+        Client client = clientRepository.findClientByIdAndUser(clientId, user);
         return ClientMapper.mapToClientDto(client);
     }
 
@@ -91,8 +97,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Page<ClientDto> getTodayBirthdays(int pageNo) {
         Pageable pageable = PageRequest.of(pageNo - 1, 10);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
-        User user = userRepository.findUserById((long)1);
+        // get logged in user
+        User user = userService.getCurrentUser();
         return clientRepository.getTodayBirthdays(user, pageable).map(ClientMapper::mapToClientDto);
     }
 
@@ -100,8 +106,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Page<ClientDto> getUpcomingBirthdays(int pageNo, String sortDir) {
         Pageable pageable = PageRequest.of(pageNo - 1, 10);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
-        User user = userRepository.findUserById((long)1);
+        // get logged in user
+        User user = userService.getCurrentUser();
         Page<Client> page = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? clientRepository.getUpcomingBirthdaysAsc(user, pageable) : clientRepository.getUpcomingBirthdaysDesc(user, pageable);
         return page.map(ClientMapper::mapToClientDto);
     }

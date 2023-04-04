@@ -122,8 +122,6 @@ public class ClientController {
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equalsIgnoreCase("asc") ? "desc" : "asc");
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to use in filepath when retrieving file attachments - should get current logged-in user
-        model.addAttribute("userId", 1);
         return "admin/view_client";
     }
 

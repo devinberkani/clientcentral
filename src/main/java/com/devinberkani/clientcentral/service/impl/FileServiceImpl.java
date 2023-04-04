@@ -10,6 +10,7 @@ import com.devinberkani.clientcentral.repository.FileAttachmentRepository;
 import com.devinberkani.clientcentral.repository.NoteRepository;
 import com.devinberkani.clientcentral.repository.UserRepository;
 import com.devinberkani.clientcentral.service.FileService;
+import com.devinberkani.clientcentral.service.UserService;
 import com.devinberkani.clientcentral.util.FileUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -40,12 +41,14 @@ public class FileServiceImpl implements FileService {
     ClientRepository clientRepository;
     NoteRepository noteRepository;
     FileAttachmentRepository fileAttachmentRepository;
+    UserService userService;
 
-    public FileServiceImpl(UserRepository userRepository, ClientRepository clientRepository, NoteRepository noteRepository, FileAttachmentRepository fileAttachmentRepository) {
+    public FileServiceImpl(UserRepository userRepository, ClientRepository clientRepository, NoteRepository noteRepository, FileAttachmentRepository fileAttachmentRepository, UserService userService) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.noteRepository = noteRepository;
         this.fileAttachmentRepository = fileAttachmentRepository;
+        this.userService = userService;
     }
 
     // handle converting ClientDto list from FileUtil class to Client list and saving newly bulk-uploaded list of Client to database
@@ -54,8 +57,8 @@ public class FileServiceImpl implements FileService {
         try {
             List<ClientDto> clientDtoList = FileUtil.csvToClientDto(file.getInputStream());
             List<Client> newClients = clientDtoList.stream().map(ClientMapper::mapToClient).toList();
-            // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set owner user for newly created client - should get current logged in user
-            User user = userRepository.findUserById((long)1);
+            // get logged in user
+            User user = userService.getCurrentUser();
             newClients.forEach(clientDto -> clientDto.setUser(user));
             clientRepository.saveAll(newClients);
         } catch (IOException e) {
@@ -78,8 +81,12 @@ public class FileServiceImpl implements FileService {
     // handle saving new user file to a specific client and note
 
     @Override
-    public void saveNewFile(MultipartFile multipartFile, Long userId, Long clientId, Long noteId) throws IOException {
-        Path uploadPath = Paths.get("src/main/resources/static/file-attachments/user-" + userId + "/client-" + clientId + "/note-" + noteId);
+    public void saveNewFile(MultipartFile multipartFile, Long clientId, Long noteId) throws IOException {
+
+        // get logged in user id
+        Long currentUserId = userService.getCurrentUser().getId();
+
+        Path uploadPath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
         if (!Files.exists(uploadPath)) {
@@ -103,10 +110,11 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(Long fileId, Long noteId, Long clientId, String fileReference) {
 
-        // handle deleting file from the filesystem from edit note view
+        // get logged in user id
+        Long currentUserId = userService.getCurrentUser().getId();
 
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
-        Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId + "/" + fileReference);
+        // handle deleting file from the filesystem from edit note view
+        Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId + "/" + fileReference);
         if (Files.exists(filePath)) {
             try {
 
@@ -114,13 +122,11 @@ public class FileServiceImpl implements FileService {
                 Files.delete(filePath);
 
                 // check if the specific note directory is empty, if it is, delete it from the filesystem
-                // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
-                File noteDirectory = new File("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId + "/note-" + noteId);
+                File noteDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
                 deleteDirectoryIfEmpty(noteDirectory);
 
                 // check if the specific client directory is empty, if it is, delete it from the filesystem
-                // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
-                File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + 1 + "/client-" + clientId);
+                File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
                 deleteDirectoryIfEmpty(clientDirectory);
 
             } catch (IOException e) {
@@ -161,9 +167,13 @@ public class FileServiceImpl implements FileService {
     // handle load specific user file from path based on specific client and note that belongs to logged-in user
 
     @Override
-    public Resource loadFileAsResource(Long userId, Long clientId, Long noteId, String fileName) throws FileNotFoundException {
+    public Resource loadFileAsResource(Long clientId, Long noteId, String fileName) throws FileNotFoundException {
+
+        // get logged in user id
+        Long currentUserId = userService.getCurrentUser().getId();
+
         try {
-            Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + userId + "/client-" + clientId + "/note-" + noteId + "/" + fileName).normalize();
+            Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId + "/" + fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;

@@ -2,7 +2,6 @@ package com.devinberkani.clientcentral.controller;
 
 import com.devinberkani.clientcentral.entity.User;
 import com.devinberkani.clientcentral.service.UserService;
-import com.devinberkani.clientcentral.util.SecurityUtils;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,18 +17,14 @@ public class GlobalModelAttributeAdvice {
 
     // handle making the user attribute accessible to all controllers
     @ModelAttribute
-    public void addUserFirstName(Model model) {
-        // Get the current user from SecurityUtils
-        org.springframework.security.core.userdetails.User currentUser = SecurityUtils.getCurrentUser();
+    public void addLoggedInUser(Model model) {
 
-        // Check if the current user is not null and has a non-null username
-        if (currentUser != null && currentUser.getUsername() != null) {
-            User user = userService.findUserByEmail(currentUser.getUsername());
+        User currentUser = userService.getCurrentUser();
 
-            // Check if a user is found by the email
-            if (user != null) {
-                model.addAttribute("user", user);
-            }
+        // Check if the current user is not null, add to model if not
+        if (currentUser != null) {
+            model.addAttribute("currentUserFirstName", currentUser.getFirstName());
+            model.addAttribute("currentUserLastName", currentUser.getLastName());
         }
     }
 

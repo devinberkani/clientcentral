@@ -53,9 +53,8 @@ public class NoteController {
 
         // add new files to filesystem
         for (MultipartFile multipartFile : multipartFiles) {
-            // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
             if (!multipartFile.isEmpty()) {
-                fileService.saveNewFile(multipartFile, (long) 1, clientId, noteId);
+                fileService.saveNewFile(multipartFile, clientId, noteId);
             }
         }
         return "redirect:/admin/client/{clientId}?create";
@@ -66,11 +65,10 @@ public class NoteController {
     public String getEditNote(@PathVariable("clientId") Long clientId,
                               @PathVariable("noteId") Long noteId,
                               Model model) {
+
         NoteDto note = noteService.findNoteById(noteId);
         model.addAttribute("note", note);
         model.addAttribute("clientId", clientId);
-        // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to use in filepath when retrieving file attachments - should get current logged-in user
-        model.addAttribute("userId", 1);
         return "admin/edit_note";
     }
 
@@ -89,9 +87,8 @@ public class NoteController {
 
         // add updated files to filesystem
         for (MultipartFile multipartFile : multipartFiles) {
-            // FIXME: AFTER SPRING SECURITY - below hardcoded user id (1) to set filepath for any existing files - should get current logged in user
             if (!multipartFile.isEmpty()) {
-                fileService.saveNewFile(multipartFile, (long) 1, clientId, noteId);
+                fileService.saveNewFile(multipartFile, clientId, noteId);
             }
         }
         model.addAttribute("clientId", clientId);

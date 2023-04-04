@@ -32,6 +32,7 @@ public class WebSpringSecurity {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize
+                                .requestMatchers(new AntPathRequestMatcher("/file-attachments/**")).denyAll()
                                 .requestMatchers(new AntPathRequestMatcher("/js/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/css/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
