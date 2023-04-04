@@ -35,7 +35,7 @@ public class User {
 
     /* The "mappedBy = user" attribute indicates that it is the user column from Clients entity that maps to this post entity.
      * The "cascade = CascadeType.REMOVE" attribute specifies that when a User entity is removed, all related Client entities should also be removed (cascaded deletion).
-     * This is not added to the database, but is rather used to
+     * This is not added to the database, but is rather used to specify the inverse side of the relationship between the User and Client entities. The mappedBy attribute specifies the name of the field in the Client entity that maps to the User entity's clients field. This allows JPA to correctly manage bidirectional relationships between entities and ensure that changes made to one side of the relationship are propagated to the other side.
      * */
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Client> clients = new ArrayList<>();

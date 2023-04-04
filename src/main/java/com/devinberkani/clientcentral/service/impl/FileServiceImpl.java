@@ -98,7 +98,7 @@ public class FileServiceImpl implements FileService {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
             FileAttachment fileAttachment = new FileAttachment();
             fileAttachment.setFileReference(fileName);
-            fileAttachment.setNote(noteRepository.findNoteById(noteId));
+            fileAttachment.setNote(noteRepository.findNoteByIdAndUser(noteId, currentUserId));
             fileAttachmentRepository.save(fileAttachment);
         } catch (IOException ioe) {
             throw new IOException("Could not save file: " + fileName, ioe);

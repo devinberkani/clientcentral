@@ -5,11 +5,13 @@ import com.devinberkani.clientcentral.service.ClientService;
 import com.devinberkani.clientcentral.service.FileService;
 import com.devinberkani.clientcentral.service.NoteService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -65,8 +67,10 @@ public class NoteController {
     public String getEditNote(@PathVariable("clientId") Long clientId,
                               @PathVariable("noteId") Long noteId,
                               Model model) {
-
         NoteDto note = noteService.findNoteById(noteId);
+        if (note == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found");
+        }
         model.addAttribute("note", note);
         model.addAttribute("clientId", clientId);
         return "admin/edit_note";

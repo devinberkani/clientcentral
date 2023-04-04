@@ -44,7 +44,9 @@ public class NoteServiceImpl implements NoteService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by("createdOn").ascending() : Sort.by("createdOn").descending();
         Pageable pageable = PageRequest.of(pageNo - 1, 5, sort);
         Client client = ClientMapper.mapToClient(clientDto);
-        return noteRepository.findByClient(client, pageable).map(NoteMapper::mapToNoteDto);
+        // get logged in user id
+        Long userId = userService.getCurrentUser().getId();
+        return noteRepository.findByClientAndUser(client, userId, pageable).map(NoteMapper::mapToNoteDto);
     }
 
     // handle create new note
@@ -82,10 +84,10 @@ public class NoteServiceImpl implements NoteService {
     // handle find note by id
     @Override
     public NoteDto findNoteById(Long noteId) {
-        Note note = noteRepository.findNoteById(noteId);
         // get logged in user id
         Long userId = userService.getCurrentUser().getId();
-        return SecurityUtils.authenticateOwnership(note, userId) ? NoteMapper.mapToNoteDto(note) : null;
+        Note note = noteRepository.findNoteByIdAndUser(noteId, userId);
+        return note == null ? null : NoteMapper.mapToNoteDto(note);
     }
 
     // handle updating a note
