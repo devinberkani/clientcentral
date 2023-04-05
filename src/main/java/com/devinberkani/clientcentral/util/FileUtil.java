@@ -22,7 +22,7 @@ public class FileUtil {
     private final static String TYPE = "text/csv";
     private final static String[] HEADERS = { "First Name", "Last Name", "Address", "Phone Number", "Email", "Birthday" };
 
-    // check if file is a csv
+    // handle checking if file is a csv
     public static boolean hasCSVFormat(MultipartFile file) throws DateTimeParseException {
         return TYPE.equals(file.getContentType())
                 || Objects.equals(file.getContentType(), "application/vnd.ms-excel");

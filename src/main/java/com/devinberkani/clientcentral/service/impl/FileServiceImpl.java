@@ -127,6 +127,10 @@ public class FileServiceImpl implements FileService {
                 File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
                 deleteDirectoryIfEmpty(clientDirectory);
 
+                // check if the specific user directory is empty, if it is, delete it from the filesystem
+                File userDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId);
+                deleteDirectoryIfEmpty(userDirectory);
+
                 // delete the file
                 fileAttachmentRepository.deleteById(fileId);
 

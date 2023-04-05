@@ -8,6 +8,7 @@ import com.devinberkani.clientcentral.entity.User;
 import com.devinberkani.clientcentral.mapper.ClientMapper;
 import com.devinberkani.clientcentral.mapper.NoteMapper;
 import com.devinberkani.clientcentral.repository.ClientRepository;
+import com.devinberkani.clientcentral.repository.FileAttachmentRepository;
 import com.devinberkani.clientcentral.repository.NoteRepository;
 import com.devinberkani.clientcentral.service.NoteService;
 import com.devinberkani.clientcentral.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,11 +31,13 @@ public class NoteServiceImpl implements NoteService {
     ClientRepository clientRepository;
     NoteRepository noteRepository;
     UserService userService;
+    FileAttachmentRepository fileAttachmentRepository;
 
-    public NoteServiceImpl(ClientRepository clientRepository, NoteRepository noteRepository, UserService userService) {
+    public NoteServiceImpl(ClientRepository clientRepository, NoteRepository noteRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
         this.clientRepository = clientRepository;
         this.noteRepository = noteRepository;
         this.userService = userService;
+        this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
     // handle get page of notes based on client, page number, and sort direction
@@ -67,16 +71,37 @@ public class NoteServiceImpl implements NoteService {
         // get logged in user id
         Long currentUserId = userService.getCurrentUser().getId();
 
-        // handle deleting corresponding files from the filesystem
-        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
-        if (Files.exists(deletePath)) {
-            try {
-                FileSystemUtils.deleteRecursively(deletePath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        // delete corresponding files (custom deleteNoteByIdAndUser method below implements a query that seems to impact CascadeType.REMOVE attribute in entity, so just doing it manually will suffice)
+        fileAttachmentRepository.deleteFileAttachmentByNoteId(noteId);
+
+        // delete note
+        int deleted = noteRepository.deleteNoteByIdAndUser(noteId, currentUserId);
+
+        if (deleted > 0) {
+
+            // handle deleting corresponding files from the filesystem
+            Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
+            if (Files.exists(deletePath)) {
+
+                try {
+                    FileSystemUtils.deleteRecursively(deletePath);
+
+                    // check if the specific client directory is empty, if it is, delete it from the filesystem
+                    File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
+                    deleteDirectoryIfEmpty(clientDirectory);
+
+                    // check if the specific user directory is empty, if it is, delete it from the filesystem
+                    File userDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId);
+                    deleteDirectoryIfEmpty(userDirectory);
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
+
         }
-        return noteRepository.deleteNoteByIdAndUser(noteId, currentUserId);
+
+        return deleted;
     }
 
     // handle find note by id
@@ -98,4 +123,16 @@ public class NoteServiceImpl implements NoteService {
         updatedNote.setClient(clientRepository.findClientByIdAndUser(clientId, user));
         noteRepository.save(updatedNote);
     }
+
+    // handle deleting directory from filesystem if it is empty
+    @Override
+    public void deleteDirectoryIfEmpty(File directory) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            if (files.length == 0) {
+                directory.delete();
+            }
+        }
+    }
+
 }

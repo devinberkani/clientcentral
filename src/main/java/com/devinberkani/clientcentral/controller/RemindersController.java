@@ -36,6 +36,7 @@ public class RemindersController {
         return getPage(todayPageNo, upcomingPageNo, sortDir, model);
     }
 
+    // getPage method to reduce repetitive code and return correct version of reminders
     public String getPage(int todayPageNo,
                           int upcomingPageNo,
                           String sortDir,

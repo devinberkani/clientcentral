@@ -60,7 +60,7 @@ public class ClientController {
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
         if (client == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         // for birthday datepicker
         LocalDate currentYear = LocalDate.now();
@@ -90,7 +90,7 @@ public class ClientController {
     public String getDeleteClient(@PathVariable("clientId") Long clientId) {
         int deleted = clientService.deleteClientById(clientId);
         if (deleted == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return "redirect:/admin/dashboard?delete";
     }
@@ -101,7 +101,7 @@ public class ClientController {
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
         if (client == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         model.addAttribute("client", client);
         Page<NoteDto> page = noteService.getNotesPage(client, 1, "desc");
@@ -109,7 +109,6 @@ public class ClientController {
     }
 
     // handle view client with search parameters
-
     @GetMapping("/{clientId}/search")
     public String getSearchViewClient(@PathVariable("clientId") Long clientId,
                                       @RequestParam("p") int pageNo,
@@ -117,14 +116,14 @@ public class ClientController {
                                       Model model) {
         ClientDto client = clientService.findClientById(clientId);
         if (client == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         model.addAttribute("client", client);
         Page<NoteDto> page = noteService.getNotesPage(client, pageNo, sortDir);
         return getPage(page, pageNo, sortDir, model);
     }
 
-    // getPage methods to reduce repetitive code and return correct view client page
+    // getPage method to reduce repetitive code and return correct view client page
     private String getPage(Page<NoteDto> page,
                            int pageNo,
                            String sortDir,

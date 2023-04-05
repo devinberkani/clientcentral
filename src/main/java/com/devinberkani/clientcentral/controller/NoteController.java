@@ -69,7 +69,7 @@ public class NoteController {
                               Model model) {
         NoteDto note = noteService.findNoteById(noteId);
         if (note == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         model.addAttribute("note", note);
         model.addAttribute("clientId", clientId);
@@ -107,7 +107,6 @@ public class NoteController {
                                 Model model) {
         int deleted = noteService.deleteNote(noteId, clientId);
         if (deleted == 0) {
-            model.addAttribute("errorMessage", "Note not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         model.addAttribute(clientId);
@@ -122,7 +121,7 @@ public class NoteController {
                                 @PathVariable("fileReference") String fileReference) {
         int deleted = fileService.deleteFile(fileId, noteId, clientId, fileReference);
         if (deleted == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return "redirect:/admin/notes/edit/client/{clientId}/note/{noteId}?delete";
     }

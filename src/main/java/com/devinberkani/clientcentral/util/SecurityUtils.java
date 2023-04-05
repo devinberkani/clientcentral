@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.User;
 
 public class SecurityUtils {
 
+    // handle get current logged in user
     public static User getCurrentUser() {
         // from spring security - contains username, password and roles
         Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
