@@ -105,7 +105,11 @@ public class NoteController {
     public String getDeleteNote(@PathVariable("clientId") Long clientId,
                                 @PathVariable("noteId") Long noteId,
                                 Model model) {
-        noteService.deleteNote(noteId, clientId);
+        int deleted = noteService.deleteNote(noteId, clientId);
+        if (deleted == 0) {
+            model.addAttribute("errorMessage", "Note not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         model.addAttribute(clientId);
         return "redirect:/admin/client/{clientId}?delete";
     }
@@ -116,7 +120,10 @@ public class NoteController {
                                 @PathVariable("noteId") Long noteId,
                                 @PathVariable("fileId") Long fileId,
                                 @PathVariable("fileReference") String fileReference) {
-        fileService.deleteFile(fileId, noteId, clientId, fileReference);
+        int deleted = fileService.deleteFile(fileId, noteId, clientId, fileReference);
+        if (deleted == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
+        }
         return "redirect:/admin/notes/edit/client/{clientId}/note/{noteId}?delete";
     }
 

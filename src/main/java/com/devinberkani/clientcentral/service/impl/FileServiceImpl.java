@@ -79,7 +79,6 @@ public class FileServiceImpl implements FileService {
     }
 
     // handle saving new user file to a specific client and note
-
     @Override
     public void saveNewFile(MultipartFile multipartFile, Long clientId, Long noteId) throws IOException {
 
@@ -106,9 +105,8 @@ public class FileServiceImpl implements FileService {
     }
 
     // handle deleting file from database and filesystem
-
     @Override
-    public void deleteFile(Long fileId, Long noteId, Long clientId, String fileReference) {
+    public int deleteFile(Long fileId, Long noteId, Long clientId, String fileReference) {
 
         // get logged in user id
         Long currentUserId = userService.getCurrentUser().getId();
@@ -129,15 +127,19 @@ public class FileServiceImpl implements FileService {
                 File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
                 deleteDirectoryIfEmpty(clientDirectory);
 
+                // delete the file
+                fileAttachmentRepository.deleteById(fileId);
+
+                return 1;
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        fileAttachmentRepository.deleteById(fileId);
+        return 0;
     }
 
     // handle deleting directory from filesystem if it is empty
-
     @Override
     public void deleteDirectoryIfEmpty(File directory) {
         File[] files = directory.listFiles();
@@ -165,7 +167,6 @@ public class FileServiceImpl implements FileService {
     }
 
     // handle load specific user file from path based on specific client and note that belongs to logged-in user
-
     @Override
     public Resource loadFileAsResource(Long clientId, Long noteId, String fileName) throws FileNotFoundException {
 

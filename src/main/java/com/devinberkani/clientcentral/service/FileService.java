@@ -10,7 +10,7 @@ import java.io.IOException;
 public interface FileService {
     void saveCsv(MultipartFile file);
     void saveNewFile(MultipartFile multipartFile, Long clientId, Long noteId) throws IOException;
-    void deleteFile(Long fileId, Long noteId, Long clientId, String fileReference);
+    int deleteFile(Long fileId, Long noteId, Long clientId, String fileReference);
     void deleteDirectoryIfEmpty(File directory);
     Resource loadFileAsResource(String fileName) throws FileNotFoundException;
     Resource loadFileAsResource(Long clientId, Long noteId, String fileName) throws FileNotFoundException;

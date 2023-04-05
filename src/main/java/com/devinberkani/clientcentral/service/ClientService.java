@@ -9,7 +9,7 @@ public interface ClientService {
     Page<ClientDto> findMatchingClients(String query, int pageNo, String sortField, String sortDir);
     Long saveNewClient(ClientDto client);
     void updateClient(ClientDto client, Long clientId);
-    void deleteClientById(Long clientId);
+    int deleteClientById(Long clientId);
     ClientDto findClientById(Long clientId);
     Page<ClientDto> getTodayBirthdays(int pageNo);
     Page<ClientDto> getUpcomingBirthdays(int pageNo, String sortDir);

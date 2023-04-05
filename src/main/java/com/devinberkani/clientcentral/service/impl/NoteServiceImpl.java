@@ -11,7 +11,6 @@ import com.devinberkani.clientcentral.repository.ClientRepository;
 import com.devinberkani.clientcentral.repository.NoteRepository;
 import com.devinberkani.clientcentral.service.NoteService;
 import com.devinberkani.clientcentral.service.UserService;
-import com.devinberkani.clientcentral.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -64,7 +62,7 @@ public class NoteServiceImpl implements NoteService {
 
     // handle deleting note and corresponding files from the filesystem
     @Override
-    public void deleteNote(Long noteId, Long clientId) {
+    public int deleteNote(Long noteId, Long clientId) {
 
         // get logged in user id
         Long currentUserId = userService.getCurrentUser().getId();
@@ -78,7 +76,7 @@ public class NoteServiceImpl implements NoteService {
                 throw new RuntimeException(e);
             }
         }
-        noteRepository.deleteById(noteId);
+        return noteRepository.deleteNoteByIdAndUser(noteId, currentUserId);
     }
 
     // handle find note by id

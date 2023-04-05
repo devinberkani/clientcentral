@@ -67,13 +67,13 @@ public class ClientServiceImpl implements ClientService {
 
     // handle delete client
     @Override
-    public void deleteClientById(Long clientId) {
+    public int deleteClientById(Long clientId) {
 
-        // get logged in user id
-        Long currentUserId = userService.getCurrentUser().getId();
+        // get logged in user
+        User user = userService.getCurrentUser();
 
         // handle deleting corresponding notes and files from the filesystem if a client is deleted
-        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
+        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + user.getId() + "/client-" + clientId);
         if (Files.exists(deletePath)) {
             try {
                 FileSystemUtils.deleteRecursively(deletePath);
@@ -81,7 +81,7 @@ public class ClientServiceImpl implements ClientService {
                 throw new RuntimeException(e);
             }
         }
-        clientRepository.deleteById(clientId);
+        return clientRepository.deleteClientByIdAndUser(clientId, user);
     }
 
     // handle find specific client by id
@@ -90,7 +90,7 @@ public class ClientServiceImpl implements ClientService {
         // get logged in user
         User user = userService.getCurrentUser();
         Client client = clientRepository.findClientByIdAndUser(clientId, user);
-        return ClientMapper.mapToClientDto(client);
+        return client == null ? null : ClientMapper.mapToClientDto(client);
     }
 
     // handle get today's birthdays

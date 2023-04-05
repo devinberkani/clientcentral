@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -16,6 +17,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE c.user.id = :userId AND (CONCAT(LOWER(c.firstName),' ',LOWER(c.lastName)) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Client> findMatchingClients(@Param("userId") Long userId, @Param("query") String query, Pageable pageable);
     Client findClientByIdAndUser(Long id, User user);
+    @Transactional
+    int deleteClientByIdAndUser(Long id, User user);
     @Query("SELECT c FROM Client c WHERE (MONTH(c.birthday) = MONTH(CURRENT_DATE()) AND (DAY(c.birthday) = DAY(CURRENT_DATE()))) AND c.user = :user")
     Page<Client> getTodayBirthdays(@Param("user") User user, Pageable pageable);
 

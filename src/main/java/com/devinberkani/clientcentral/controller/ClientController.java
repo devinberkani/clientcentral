@@ -6,10 +6,12 @@ import com.devinberkani.clientcentral.service.ClientService;
 import com.devinberkani.clientcentral.service.NoteService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -57,6 +59,9 @@ public class ClientController {
     public String getEditClient(@PathVariable("clientId") Long clientId,
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
+        if (client == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
         // for birthday datepicker
         LocalDate currentYear = LocalDate.now();
         LocalDate nextYear = LocalDate.now().plusYears(1).minusDays(1);
@@ -83,7 +88,10 @@ public class ClientController {
     // handle delete client
     @GetMapping("/delete/{clientId}")
     public String getDeleteClient(@PathVariable("clientId") Long clientId) {
-        clientService.deleteClientById(clientId);
+        int deleted = clientService.deleteClientById(clientId);
+        if (deleted == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
         return "redirect:/admin/dashboard?delete";
     }
 
@@ -92,6 +100,9 @@ public class ClientController {
     public String getViewClient(@PathVariable("clientId") Long clientId,
                                 Model model) {
         ClientDto client = clientService.findClientById(clientId);
+        if (client == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
         model.addAttribute("client", client);
         Page<NoteDto> page = noteService.getNotesPage(client, 1, "desc");
         return getPage(page, 1, "desc", model);
@@ -105,6 +116,9 @@ public class ClientController {
                                       @RequestParam("d") String sortDir,
                                       Model model) {
         ClientDto client = clientService.findClientById(clientId);
+        if (client == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
+        }
         model.addAttribute("client", client);
         Page<NoteDto> page = noteService.getNotesPage(client, pageNo, sortDir);
         return getPage(page, pageNo, sortDir, model);

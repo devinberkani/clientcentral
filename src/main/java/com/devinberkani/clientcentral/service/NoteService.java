@@ -8,7 +8,7 @@ public interface NoteService {
 
     Page<NoteDto> getNotesPage(ClientDto clientDto, int pageNo, String sortDir);
     Long saveNewNote(NoteDto note, Long clientId);
-    void deleteNote(Long noteId, Long clientId);
+    int deleteNote(Long noteId, Long clientId);
     NoteDto findNoteById(Long noteId);
     void updateNote(NoteDto note, Long noteId, Long clientId);
 
