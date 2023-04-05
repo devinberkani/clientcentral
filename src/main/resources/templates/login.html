@@ -19,6 +19,18 @@
                 </div>
                 <div class="card-body">
                     <!-- spring security handles /login url action internally -->
+
+                    <!-- hidden demo login -->
+                    <form
+                            method="post"
+                            th:action="@{/login}"
+                            id="demoLoginForm"
+                            role="form"
+                            style="display: none;">
+                        <input type="text" name="username" id="demoUsername"/>
+                        <input type="password" name="password" id="demoPassword"/>
+                    </form>
+
                     <form
                             method="post"
                             th:action="@{/login}"
@@ -49,10 +61,13 @@
                         <div class="form-group mb-3">
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <span> Not registered yet?
-                      <a th:href="@{/register}">Sign Up Here</a>
+                                <a th:href="@{/register}">Sign Up Here</a>
                 </span>
                         </div>
                     </form>
+                    <div class="row d-grid gap-2">
+                    <a class="btn btn-outline-secondary text-center" th:onclick="demoLogin()">ClientCentral Demo Login</a>
+                    </div>
                 </div>
             </div>
         </div>
