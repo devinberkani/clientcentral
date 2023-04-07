@@ -80,18 +80,18 @@ public class NoteServiceImpl implements NoteService {
         if (deleted > 0) {
 
             // handle deleting corresponding files from the filesystem
-            Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
+            Path deletePath = Paths.get("file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
             if (Files.exists(deletePath)) {
 
                 try {
                     FileSystemUtils.deleteRecursively(deletePath);
 
                     // check if the specific client directory is empty, if it is, delete it from the filesystem
-                    File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
+                    File clientDirectory = new File("file-attachments/user-" + currentUserId + "/client-" + clientId);
                     deleteDirectoryIfEmpty(clientDirectory);
 
                     // check if the specific user directory is empty, if it is, delete it from the filesystem
-                    File userDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId);
+                    File userDirectory = new File("file-attachments/user-" + currentUserId);
                     deleteDirectoryIfEmpty(userDirectory);
 
                 } catch (IOException e) {

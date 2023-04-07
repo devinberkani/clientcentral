@@ -14,7 +14,7 @@
             <div class="card-body">
                 <h4>CSV Upload Instructions:</h4>
                 <ol>
-                    <li>Click <a th:href="@{/admin/files/download/ClientCentralCSVTemplate.csv}">here</a> to download the ClientCentral CSV template.</li>
+                    <li>Click <a th:href="@{/admin/files/download/{fileReference}(fileReference='ClientCentralCSVTemplate.csv')}">here</a> to download the ClientCentral CSV template.</li>
                     <li>Fill out the CSV and upload your clients in the form below.</li>
                 </ol>
                 <h5>Important:</h5>
@@ -40,7 +40,7 @@
                         <input class="form-control" id="file" type="file" name="file">
                         <input class="btn btn-primary" type="submit" value="Upload">
                     </div>
-                    <label for="file" class="form-label">*Must be a properly formatted CSV file. <a th:href="@{/admin/files/download/ClientCentralCSVTemplate.csv}">Download Template</a></label>
+                    <label for="file" class="form-label">*Must be a properly formatted CSV file. <a th:href="@{/admin/files/download/{fileReference}(fileReference='ClientCentralCSVTemplate.csv')}">Download Template</a></label>
                 </form>
             </div>
         </div>

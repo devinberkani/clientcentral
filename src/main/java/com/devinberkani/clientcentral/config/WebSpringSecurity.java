@@ -36,6 +36,7 @@ public class WebSpringSecurity {
                                 .requestMatchers(new AntPathRequestMatcher("/js/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/css/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/downloads/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/register/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/admin/**")).authenticated()

@@ -49,8 +49,8 @@ public class FileController {
     }
 
     // handle download bulk upload csv file template
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadCsvTemplate(@PathVariable String fileName) throws FileNotFoundException {
+    @GetMapping("/download/{fileReference}")
+    public ResponseEntity<Resource> downloadCsvTemplate(@PathVariable("fileReference") String fileName) throws FileNotFoundException {
         Resource resource = fileService.loadFileAsResource(fileName);
         return ResponseEntity.ok()
                 // tells the client that the response body should be treated as a file for download, rather than being displayed in the browser

@@ -14,8 +14,9 @@ import com.devinberkani.clientcentral.service.UserService;
 import com.devinberkani.clientcentral.util.FileUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +42,6 @@ public class FileServiceImpl implements FileService {
     NoteRepository noteRepository;
     FileAttachmentRepository fileAttachmentRepository;
     UserService userService;
-
     public FileServiceImpl(UserRepository userRepository, ClientRepository clientRepository, NoteRepository noteRepository, FileAttachmentRepository fileAttachmentRepository, UserService userService) {
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
@@ -85,7 +84,7 @@ public class FileServiceImpl implements FileService {
         // get logged in user id
         Long currentUserId = userService.getCurrentUser().getId();
 
-        Path uploadPath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
+        Path uploadPath = Paths.get("file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
 
         if (!Files.exists(uploadPath)) {
@@ -112,7 +111,7 @@ public class FileServiceImpl implements FileService {
         Long currentUserId = userService.getCurrentUser().getId();
 
         // handle deleting file from the filesystem from edit note view
-        Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId + "/" + fileReference);
+        Path filePath = Paths.get("file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId + "/" + fileReference);
         if (Files.exists(filePath)) {
             try {
 
@@ -120,15 +119,15 @@ public class FileServiceImpl implements FileService {
                 Files.delete(filePath);
 
                 // check if the specific note directory is empty, if it is, delete it from the filesystem
-                File noteDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
+                File noteDirectory = new File("file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId);
                 deleteDirectoryIfEmpty(noteDirectory);
 
                 // check if the specific client directory is empty, if it is, delete it from the filesystem
-                File clientDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId);
+                File clientDirectory = new File("file-attachments/user-" + currentUserId + "/client-" + clientId);
                 deleteDirectoryIfEmpty(clientDirectory);
 
                 // check if the specific user directory is empty, if it is, delete it from the filesystem
-                File userDirectory = new File("src/main/resources/static/file-attachments/user-" + currentUserId);
+                File userDirectory = new File("file-attachments/user-" + currentUserId);
                 deleteDirectoryIfEmpty(userDirectory);
 
                 // delete the file
@@ -157,15 +156,16 @@ public class FileServiceImpl implements FileService {
     // handle load CSV template file from absolute file path
     @Override
     public Resource loadFileAsResource(String fileName) throws FileNotFoundException {
+
         try {
-            Path filePath = Paths.get("src/main/resources/static/downloads/" + fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+            String filePath = String.format("static/downloads/%s", fileName);
+            Resource resource = new ClassPathResource(filePath);
             if (resource.exists()) {
                 return resource;
             } else {
                 throw new FileNotFoundException("File not found: " + fileName);
             }
-        } catch (FileNotFoundException | MalformedURLException fileNotFoundException) {
+        } catch (FileNotFoundException fileNotFoundException) {
             throw new FileNotFoundException("File not found: " + fileName);
         }
     }
@@ -178,14 +178,16 @@ public class FileServiceImpl implements FileService {
         Long currentUserId = userService.getCurrentUser().getId();
 
         try {
-            Path filePath = Paths.get("src/main/resources/static/file-attachments/user-" + currentUserId + "/client-" + clientId + "/note-" + noteId + "/" + fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
+
+            // ClassPathResource is a Spring Resource implementation that represents a resource loaded from the classpath.
+            String filePath = String.format("file-attachments/user-%d/client-%d/note-%d/%s", currentUserId, clientId, noteId, fileName);
+            Resource resource = new PathResource(filePath);
             if (resource.exists()) {
                 return resource;
             } else {
                 throw new FileNotFoundException("File not found: " + fileName);
             }
-        } catch (FileNotFoundException | MalformedURLException fileNotFoundException) {
+        } catch (FileNotFoundException fileNotFoundException) {
             throw new FileNotFoundException("File not found: " + fileName);
         }
     }

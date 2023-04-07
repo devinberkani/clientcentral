@@ -8,8 +8,8 @@ setTimeout(function() {
 }, 7000);
 
 // handle demo user login
-function demoLogin() {
-    document.getElementById("demoUsername").value = "demo@gmail.com";
-    document.getElementById("demoPassword").value = "demoPassword";
-    document.getElementById("demoLoginForm").submit();
+function demoL() {
+    document.getElementById("demoU").value = "demo@gmail.com";
+    document.getElementById("demoP").value = "demoPassword";
+    document.getElementById("demoLF").submit();
 }

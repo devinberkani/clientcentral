@@ -20,14 +20,23 @@
                 <div class="card-body">
 
                     <!-- hidden demo login form -->
-                    <form
-                            method="post"
-                            th:action="@{/login}"
-                            id="demoLoginForm"
-                            role="form"
-                            style="display: none;">
-                        <input type="text" name="username" id="demoUsername"/>
-                        <input type="password" name="password" id="demoPassword"/>
+                    <form method="post"
+                          th:action="@{/login}"
+                          id="demoLF"
+                          role="form"
+                          style="display: none;"
+                          autocomplete="off"
+                    >
+                        <input type="hidden"
+                               name="username"
+                               id="demoU"
+                               autocomplete="off" readonly
+                        />
+                        <input type="hidden"
+                               name="password"
+                               id="demoP"
+                               autocomplete="off" readonly
+                        />
                     </form>
 
                     <!-- primary login form -->
@@ -67,7 +76,7 @@
                         </div>
                     </form>
                     <div class="row d-grid px-2">
-                        <a class="btn btn-outline-dark text-center" th:onclick="demoLogin()">ClientCentral Demo Login</a>
+                        <a class="btn btn-outline-dark text-center" th:onclick="demoL()">ClientCentral Demo Login</a>
                     </div>
                 </div>
             </div>

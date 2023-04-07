@@ -35,3 +35,4 @@ build/
 ### Sensitive Data ###
 /src/main/resources/static/file-attachments
 /src/main/resources/application.properties
+.ebextensions

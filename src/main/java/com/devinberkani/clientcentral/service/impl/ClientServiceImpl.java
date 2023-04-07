@@ -73,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
         User user = userService.getCurrentUser();
 
         // handle deleting corresponding notes and files from the filesystem if a client is deleted
-        Path deletePath = Paths.get("src/main/resources/static/file-attachments/user-" + user.getId() + "/client-" + clientId);
+        Path deletePath = Paths.get("file-attachments/user-" + user.getId() + "/client-" + clientId);
         if (Files.exists(deletePath)) {
             try {
                 FileSystemUtils.deleteRecursively(deletePath);
